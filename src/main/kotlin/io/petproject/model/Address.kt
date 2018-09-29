@@ -1,7 +1,7 @@
 package io.petproject.model
 
 data class Address(val country: String, val streetName: String, val zipCode: String, val city: String, val state: String) {
-    
+
     class Builder {
 
         private lateinit var _streetName: String
