@@ -1,6 +1,7 @@
 package io.petproject.model
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 class ShoppingCart {
 
@@ -17,6 +18,10 @@ class ShoppingCart {
     }
 
     fun computeSubtotal(): BigDecimal {
-        return BigDecimal.ZERO
+        return items.stream()
+                .map(Item::subtotal)
+                .reduce(BigDecimal::add)
+                .orElse(BigDecimal.ZERO)
+                .setScale(2, RoundingMode.UNNECESSARY)
     }
 }
