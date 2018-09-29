@@ -17,7 +17,7 @@ internal class ItemTest {
             },
             DynamicTest.dynamicTest("when price has more than 2 digits, round up") {
                 val product = Product("product", ProductType.PHYSICAL, 1.965)
-                assertThat(product.price).isEqualTo(1.97)
+                assertThat(product.price.toPlainString()).isEqualTo("1.97")
             }
     )
 
@@ -33,7 +33,7 @@ internal class ItemTest {
             DynamicTest.dynamicTest("when querying for subtotal, compute unit_price * units") {
                 val product = Product("product", ProductType.PHYSICAL, 1.99)
                 val item = Item(product, 10)
-                assertThat(item.subtotal).isEqualTo(19.90)
+                assertThat(item.subtotal.toPlainString()).isEqualTo("19.90")
             }
     )
 }
