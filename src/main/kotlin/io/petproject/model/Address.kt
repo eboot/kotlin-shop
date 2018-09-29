@@ -2,6 +2,14 @@ package io.petproject.model
 
 data class Address(val country: String, val streetName: String, val zipCode: String, val city: String, val state: String) {
 
+    init {
+        require(country.isNotEmpty()) { "Country cannot be empty" }
+        require(streetName.isNotEmpty()) { "Street name cannot be empty" }
+        require(zipCode.isNotEmpty()) { "ZipCode cannot be empty" }
+        require(city.isNotEmpty()) { "City cannot be empty" }
+        require(state.isNotEmpty()) { "State cannot be empty" }
+    }
+
     class Builder {
 
         private lateinit var _streetName: String
