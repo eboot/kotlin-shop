@@ -61,7 +61,7 @@ internal class OrderTest {
     @Test
     fun `when creating a Order with Items of different ProductTypes, throw IllegalStateEx`() {
         val ex = assertThrows(IllegalStateException::class.java) {
-            Order(mixedItems, Account("email@domain.suffix", address), object : Payment {})
+            Order(mixedItems, Account("email@domain.suffix", address))
         }
         assertThat(ex.message).isEqualTo("Items must belong to the same Product Type")
     }
