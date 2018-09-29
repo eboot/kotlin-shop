@@ -49,4 +49,9 @@ internal class ShoppingCartTest {
         assertThat(ShoppingCart().computeSubtotal().toPlainString()).isEqualTo("0.00")
     }
 
+    @Test
+    fun `should build a list of Orders distinguished by Product Type`() {
+        val orders: List<Order> = shoppingCart.checkout(account)
+        assertThat(orders.size).isEqualTo(4)
+    }
 }

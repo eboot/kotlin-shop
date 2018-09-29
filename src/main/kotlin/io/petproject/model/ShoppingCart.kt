@@ -24,4 +24,8 @@ class ShoppingCart {
                 .orElse(BigDecimal.ZERO)
                 .setScale(2, RoundingMode.UNNECESSARY)
     }
+
+    fun checkout(account: Account): List<Order> {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
 }
