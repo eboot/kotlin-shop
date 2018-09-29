@@ -12,7 +12,7 @@ class ShoppingCart {
         return this
     }
 
-    fun remoteItem(item: Item): ShoppingCart {
+    fun removeItem(item: Item): ShoppingCart {
         items.remove(item)
         return this
     }
@@ -26,6 +26,9 @@ class ShoppingCart {
     }
 
     fun checkout(account: Account): List<Order> {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        return items.asSequence()
+                .groupBy { i -> i.product.type }
+                .map{ (_, list) -> Order(list, account)}
+                .toList()
     }
 }
