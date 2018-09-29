@@ -1,5 +1,7 @@
 package io.petproject.model
 
+import java.math.BigDecimal
+
 class ShoppingCart {
 
     var items = HashSet<Item>()
@@ -14,7 +16,7 @@ class ShoppingCart {
         return this
     }
 
-    fun computeSubtotal() {
-
+    fun computeSubtotal(): BigDecimal {
+        return BigDecimal.ZERO
     }
 }
