@@ -1,6 +1,18 @@
-plugins {
-    id 'org.jetbrains.kotlin.jvm' version '1.2.71'
+buildscript {
+    ext {
+        kotlin_version = '1.2.71'
+        assertj_version = '3.11.0'
+
+    }
+    repositories {
+        mavenCentral()
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
 }
+
+apply plugin: "kotlin"
 
 group 'io.petproject'
 version '1.0-SNAPSHOT'
@@ -10,7 +22,9 @@ repositories {
 }
 
 dependencies {
-    compile "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
+    testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
+    testCompile("org.assertj:assertj-core:$assertj_version")
 }
 
 compileKotlin {
