@@ -6,6 +6,8 @@ data class Order(val items: List<Item>, val account: Account) {
     lateinit var shippingAddress: Address
     lateinit var payment: Payment
 
+    constructor(item: Item, account: Account): this(listOf(item), account)
+
     init {
         val itemGroup = items.asSequence().map { item -> item.group }.toHashSet()
         check(itemGroup.size == 1) { "Items must belong to the same Item Group" }
