@@ -27,8 +27,13 @@ class ShoppingCart {
 
     fun checkout(account: Account): List<Order> {
         return items.asSequence()
-                .groupBy { i -> i.product.category }
-                .map{ (_, list) -> Order(list, account)}
-                .toList()
+                .groupBy { i -> i.group }
+                .map { (group, items) ->
+                    if (group == ItemGroup.MEMBERSHIP) {
+                        items.map { i -> Order(i, account) }
+                    } else {
+                        listOf(Order(items, account))
+                    }
+                }.flatten()
     }
 }
