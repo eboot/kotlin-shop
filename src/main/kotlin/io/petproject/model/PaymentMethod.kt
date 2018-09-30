@@ -4,5 +4,5 @@ interface PaymentMethod {
 
     val billingAddress: Address
 
-    fun charge()
+    fun charge(): Boolean
 }
