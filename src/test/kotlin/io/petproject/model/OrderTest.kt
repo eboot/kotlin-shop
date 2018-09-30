@@ -76,11 +76,18 @@ internal class OrderTest {
     }
 
     @Test
-    fun `when placing an Order of Physical Items, throw IllegalStateEx if shippingAddress wasn't informed`() {
-        assertThrows(java.lang.IllegalStateException::class.java) {
+    fun `when placing an Order of physical items, throw IllegalStateEx if shippingAddress wasn't informed`() {
+        val ex = assertThrows(IllegalStateException::class.java) {
             Order(physicalItems, account).place()
         }
+        assertThat(ex.message).isEqualTo("Shipping Address must be informed for Orders with physical delivery")
     }
 
+    @Test
+    fun `when placing an Order of physical Items, physical_Books should be shipped separately`() {
+        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
+        val order = Order(physicalItems, account)
+        assertThat(order.shipments?.size).isEqualTo(2)
+    }
 
 }
