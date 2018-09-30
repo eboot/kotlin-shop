@@ -23,7 +23,7 @@ class Order(val items: List<Item>, val account: Account) {
             this.shipments = setupPackages()
         }
         checkNotNull(paymentMethod) { "A Payment Method must be informed to place the order" }
-        TODO("Persist Order and get the Order ID")
+        //TODO("Persist Order and get the Order ID")
     }
 
     private fun setupPackages(): List<Package> {

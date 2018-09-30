@@ -7,23 +7,32 @@ import org.junit.jupiter.api.Test
 
 internal class OrderTest {
 
+    private lateinit var account: Account
+    private lateinit var paymentMethod: PaymentMethod
+
     private lateinit var physicalItems: List<Item>
     private lateinit var physicalTaxFreeItems: List<Item>
     private lateinit var digitalItems: List<Item>
     private lateinit var subscriptions: List<Item>
     private lateinit var mixedItems: List<Item>
-    private lateinit var account: Account
+
 
     @BeforeEach
     fun setup() {
-        account = Account("email@domain.suffix", Address.Builder()
+        val address = Address.Builder()
                 .country("Brazil")
                 .city("Sao Paulo")
                 .state("SP")
                 .zipCode("01000-000")
                 .streetName("Av Paulista, 1000")
                 .build()
-        )
+
+        account = Account("email@domain.suffix", address)
+
+        paymentMethod = object : PaymentMethod {
+            override val billingAddress: Address = address
+            override fun charge(): Boolean = true
+        }
 
         val console = Product("PS4 Slim 1TB", Category.PHYSICAL, 1899.00)
         val chair = Product("PDP Chair", Category.PHYSICAL, 399.00)
@@ -84,6 +93,7 @@ internal class OrderTest {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = Order(physicalItems, account)
                 .shippingAddress(account.address)
+                .paymentMethod(paymentMethod)
         order.place()
         assertThat(order.shipments?.size).isEqualTo(2)
     }
@@ -93,6 +103,7 @@ internal class OrderTest {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = Order(physicalItems, account)
                 .shippingAddress(account.address)
+                .paymentMethod(paymentMethod)
         order.place()
 
         val parcel: Package? = order.shipments
