@@ -4,6 +4,7 @@ import java.math.BigDecimal
 import java.math.RoundingMode
 
 data class Product(val name: String, val category: Category, private val _price: Double) {
+
     val price: BigDecimal = _price
             .toBigDecimal()
             .setScale(2, RoundingMode.HALF_UP)

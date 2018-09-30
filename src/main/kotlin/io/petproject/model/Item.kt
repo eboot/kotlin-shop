@@ -3,6 +3,7 @@ package io.petproject.model
 import java.math.BigDecimal
 
 data class Item(val product: Product, val quantity: Int) {
+
     val subtotal: BigDecimal = product.price
             .multiply(quantity.toBigDecimal())
 
