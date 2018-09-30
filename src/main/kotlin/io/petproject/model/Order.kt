@@ -2,9 +2,10 @@ package io.petproject.model
 
 data class Order(val items: List<Item>, val account: Account) {
 
-    lateinit var billingAddress: Address
-    lateinit var shippingAddress: Address
     lateinit var payment: Payment
+    lateinit var billingAddress: Address
+    var shippingAddress: Address? = null
+    var shipments: List<Package>? = null
     val type: Type
 
     constructor(item: Item, account: Account): this(listOf(item), account)
@@ -18,7 +19,9 @@ data class Order(val items: List<Item>, val account: Account) {
     }
 
     fun place() {
-
+        if (type == Type.PHYSICAL) {
+            checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
+        }
     }
 
 }
