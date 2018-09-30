@@ -16,4 +16,9 @@ data class Order(val items: List<Item>, val account: Account) {
                 .toHashSet().size == 1) { "Items must belong to the same Item Group" }
         type = items[0].group
     }
+
+    fun place() {
+
+    }
+
 }

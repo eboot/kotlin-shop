@@ -75,5 +75,12 @@ internal class OrderTest {
         assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
     }
 
+    @Test
+    fun `when placing an Order of Physical Items, throw IllegalStateEx if shippingAddress wasn't informed`() {
+        assertThrows(java.lang.IllegalStateException::class.java) {
+            Order(physicalItems, account).place()
+        }
+    }
+
 
 }
