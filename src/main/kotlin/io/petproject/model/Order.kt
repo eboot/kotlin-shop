@@ -24,9 +24,14 @@ data class Order(val items: List<Item>, val account: Account) {
         }
     }
 
+    fun shippingAddress(address: Address): Order {
+        this.shippingAddress = address
+        return this
+    }
+
 }
 
-data class Package(val items: List<Item>) {
+data class Package(val items: List<Item>, val shippingLabel: Address) {
 
     init {
         require(items.isNotEmpty()) { "There must be at least one item to package" }
