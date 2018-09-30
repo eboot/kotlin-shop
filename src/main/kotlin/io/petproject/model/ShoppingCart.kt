@@ -29,7 +29,7 @@ class ShoppingCart {
         return items.asSequence()
                 .groupBy { i -> i.group }
                 .map { (group, items) ->
-                    if (group == ItemGroup.MEMBERSHIP) {
+                    if (group == Type.MEMBERSHIP) {
                         items.map { i -> Order(i, account) }
                     } else {
                         listOf(Order(items, account))

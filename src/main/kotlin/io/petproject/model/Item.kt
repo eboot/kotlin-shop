@@ -6,24 +6,18 @@ data class Item(val product: Product, val quantity: Int) {
     val subtotal: BigDecimal = product.price
             .multiply(quantity.toBigDecimal())
 
-    val group: ItemGroup by lazy {
+    val group: Type by lazy {
         when(product.category) {
-            Category.DIGITAL_COPY_MOVIES_TV -> ItemGroup.DIGITAL
-            Category.DIGITAL_MUSIC -> ItemGroup.DIGITAL
-            Category.DIGITAL_VIDEO_GAMES -> ItemGroup.DIGITAL
-            Category.DIGITAL_SOFTWARE -> ItemGroup.DIGITAL
-            Category.SUBSCRIPTION -> ItemGroup.MEMBERSHIP
-            else -> ItemGroup.PHYSICAL
+            Category.DIGITAL_COPY_MOVIES_TV -> Type.DIGITAL
+            Category.DIGITAL_MUSIC -> Type.DIGITAL
+            Category.DIGITAL_VIDEO_GAMES -> Type.DIGITAL
+            Category.DIGITAL_SOFTWARE -> Type.DIGITAL
+            Category.SUBSCRIPTION -> Type.MEMBERSHIP
+            else -> Type.PHYSICAL
         }
     }
 
     init {
         require(quantity > 0) { "Quantity must be > 0" }
     }
-}
-
-enum class ItemGroup {
-    PHYSICAL,
-    DIGITAL,
-    MEMBERSHIP
 }
