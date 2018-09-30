@@ -6,11 +6,17 @@ interface Order {
 
     val items: List<Item>
     val account: Account
-    val paymentMethod: PaymentMethod?
+    var paymentMethod: PaymentMethod?
     var status: OrderStatus
 
     fun place() {
         require(items.isNotEmpty()) { "There must be at least one item to place the Order" }
+        requireNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
+    }
+
+    fun paymentMethod(paymentMethod: PaymentMethod): Order {
+        this.paymentMethod = paymentMethod
+        return this
     }
 
     fun total(): BigDecimal {
@@ -28,6 +34,7 @@ class PhysicalOrder(override val items: List<Item>,
     override var status: OrderStatus = OrderStatus.PENDING
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
+
 
     override
     fun place() {
