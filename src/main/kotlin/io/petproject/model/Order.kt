@@ -24,15 +24,37 @@ class PhysicalOrder(override val items: List<Item>,
                     override val paymentMethod: PaymentMethod) : OrderIface {
 
     override var status: OrderStatus = OrderStatus.PENDING
+    var shippingAddress: Address? = null
+    var shipments: List<Package>? = null
 
     override
     fun place() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
+        this.shipments = setupPackages()
     }
 
     override
     fun total(): BigDecimal {
-        TODO("Compute Items Subtotal + Shipping Costs")
+        val subtotal = super.total()
+        val shippingCosts = BigDecimal.ZERO //TODO("Compute Shipping Costs")
+        return subtotal.add(shippingCosts)
+    }
+
+    fun shippingAddress(address: Address): PhysicalOrder {
+        this.shippingAddress = address
+        return this
+    }
+
+    private fun setupPackages(): List<Package> {
+        return items.asSequence()
+                .groupBy { item ->
+                    when (item.product.category) {
+                        Category.PHYSICAL_BOOK -> ShippingLabel.TAX_FREE
+                        else -> ShippingLabel.DEFAULT
+                    }
+                }.map { (label, items) ->
+                    Package(items, account.address, label)
+                }.toList()
     }
 
 }
@@ -44,14 +66,14 @@ class DigitalOrder(override val items: List<Item>,
     override var status: OrderStatus = OrderStatus.PENDING
 
     override fun place() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented")
     }
 
     override fun total(): BigDecimal {
-        TODO("Compute Items Subtotal + Discounts for Digital Media")
-
+        val subtotal = super.total()
+        val discounts = BigDecimal.ZERO // TODO("Compute Digital Media discounts")
+        return subtotal.subtract(discounts)
     }
-
 }
 
 class MembershipOrder(override val items: List<Item>,
@@ -61,12 +83,9 @@ class MembershipOrder(override val items: List<Item>,
     override var status: OrderStatus = OrderStatus.PENDING
 
     override fun place() {
-        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        //TODO("not implemented")
     }
 
-    override fun total(): BigDecimal {
-        TODO("Compute Items Subtotal for Membership")
-    }
 }
 
 
