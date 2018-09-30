@@ -9,7 +9,9 @@ interface Order {
     val paymentMethod: PaymentMethod
     var status: OrderStatus
 
-    fun place()
+    fun place() {
+        require(items.isNotEmpty()) { "There must be at least one item to place the Order" }
+    }
 
     fun total(): BigDecimal {
         return items.asSequence()
@@ -29,6 +31,7 @@ class PhysicalOrder(override val items: List<Item>,
 
     override
     fun place() {
+        super.place()
         checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
         this.shipments = setupPackages()
     }
@@ -65,10 +68,6 @@ class DigitalOrder(override val items: List<Item>,
 
     override var status: OrderStatus = OrderStatus.PENDING
 
-    override fun place() {
-        //TODO("not implemented")
-    }
-
     override fun total(): BigDecimal {
         val subtotal = super.total()
         val discounts = BigDecimal.ZERO // TODO("Compute Digital Media discounts")
@@ -81,10 +80,6 @@ class MembershipOrder(override val items: List<Item>,
                       override val paymentMethod: PaymentMethod) : Order {
 
     override var status: OrderStatus = OrderStatus.PENDING
-
-    override fun place() {
-        //TODO("not implemented")
-    }
 
 }
 
