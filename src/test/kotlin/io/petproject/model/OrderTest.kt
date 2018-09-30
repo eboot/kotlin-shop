@@ -64,18 +64,12 @@ internal class OrderTest {
         mixedItems = listOf(physicalItems, digitalItems).flatten()
     }
 
-    @Test
-    fun `when creating a Order with Items from different ItemGroups, throw IllegalStateEx`() {
-        val ex = assertThrows(IllegalStateException::class.java) {
-            Order(mixedItems, account)
-        }
-        assertThat(ex.message).isEqualTo("Items must belong to the same Item Group")
-    }
 
     @Test
-    fun `when creating an Order, there must be at least one item in the list`() {
+    fun `when placing an Order, there must be at least one item in the list`() {
         val ex = assertThrows(IllegalArgumentException::class.java) {
-            Order(ArrayList(), account)
+            val order = PhysicalOrder(ArrayList(), account, paymentMethod)
+            order.place()
         }
         assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
     }
@@ -83,55 +77,35 @@ internal class OrderTest {
     @Test
     fun `when placing an Order with Physical items, a shippingAddress must be informed`() {
         val ex = assertThrows(IllegalStateException::class.java) {
-            Order(physicalItems, account).place()
+            val order = PhysicalOrder(physicalItems, account, paymentMethod)
+            order.place()
         }
         assertThat(ex.message).isEqualTo("Shipping Address must be informed for Orders with physical delivery")
     }
 
     @Test
-    fun `when placing an Order successfully, status should be PENDING`() {
-        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
-        val order = Order(physicalItems, account)
-                .shippingAddress(account.address)
-                .paymentMethod(paymentMethod)
-                .place()
-        assertThat(order.status).isEqualTo(OrderStatus.PENDING)
-    }
-
-    @Test
     fun `when placing an Order with different Physical items, Physical_Books should be shipped separately`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
-        val order = Order(physicalItems, account)
+        val order = PhysicalOrder(physicalItems, account, paymentMethod)
                 .shippingAddress(account.address)
-                .paymentMethod(paymentMethod)
-                .place()
+
+        order.place()
         assertThat(order.shipments?.size).isEqualTo(2)
     }
 
     @Test
     fun `when placing an Order with physical_books, its package must contain notes informing it's free of taxes`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
-        val order = Order(physicalItems, account)
+        val order = PhysicalOrder(physicalItems, account, paymentMethod)
                 .shippingAddress(account.address)
-                .paymentMethod(paymentMethod)
-                .place()
 
+        order.place()
         val parcel: Package? = order.shipments
                 ?.asSequence()
                 ?.find { s -> s.shippingLabel == ShippingLabel.TAX_FREE }
 
         assertThat(parcel?.shippingLabel?.label)
                 .isEqualTo("Isento de impostos conforme disposto na Constituição Art. 150, VI, d.")
-    }
-
-    @Test
-    fun `when placing an Order, a Payment Method must be informed`() {
-        val ex = assertThrows(IllegalStateException::class.java) {
-            Order(physicalItems, account)
-                    .shippingAddress(account.address)
-                    .place()
-        }
-        assertThat(ex.message).isEqualTo("A Payment Method must be informed to place the order")
     }
 
 }
