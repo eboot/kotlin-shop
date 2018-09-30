@@ -5,7 +5,7 @@ class Order(val items: List<Item>, val account: Account) {
     val type: Type
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
-    lateinit var payment: Payment
+    lateinit var paymentMethod: PaymentMethod
     lateinit var billingAddress: Address
 
     constructor(item: Item, account: Account): this(listOf(item), account)
