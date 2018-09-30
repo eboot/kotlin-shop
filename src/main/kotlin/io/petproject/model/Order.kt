@@ -79,8 +79,9 @@ class MembershipOrder(override val items: List<Item>,
                       override val account: Account,
                       override val paymentMethod: PaymentMethod) : Order {
 
-    override var status: OrderStatus = OrderStatus.PENDING
+    constructor(item: Item, account: Account, paymentMethod: PaymentMethod): this(listOf(item), account, paymentMethod)
 
+    override var status: OrderStatus = OrderStatus.PENDING
 }
 
 enum class OrderStatus {
