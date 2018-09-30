@@ -21,17 +21,19 @@ data class Order(val items: List<Item>, val account: Account) {
     fun place() {
         if (type == Type.PHYSICAL) {
             checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
-            shipments = shippingPackages()
+            shipments = setupPackages()
         }
     }
 
-    private fun shippingPackages(): List<Package> {
+    private fun setupPackages(): List<Package> {
         return items.asSequence()
-                .groupBy { item -> when(item.product.category) {
-                    Category.PHYSICAL_BOOK -> "A"
-                    else -> "B"
-                }}.map {
-                    (_, items) -> Package(items, account.address)
+                .groupBy { item ->
+                    when (item.product.category) {
+                        Category.PHYSICAL_BOOK -> ShippingLabel.TAX_FREE
+                        else -> ShippingLabel.DEFAULT
+                    }
+                }.map { (label, items) ->
+                    Package(items, account.address, label)
                 }.toList()
     }
 
@@ -42,9 +44,16 @@ data class Order(val items: List<Item>, val account: Account) {
 
 }
 
-data class Package(val items: List<Item>, val shippingLabel: Address) {
+data class Package(val items: List<Item>, val shippingAddress: Address, val label: ShippingLabel) {
+
+    constructor(items: List<Item>, shippingAddress: Address): this(items, shippingAddress, ShippingLabel.DEFAULT)
 
     init {
         require(items.isNotEmpty()) { "There must be at least one item to package" }
     }
+}
+
+enum class ShippingLabel(val label: String = "") {
+    TAX_FREE("Isento de impostos conforme disposto na Constituição Art. 150, VI, d."),
+    DEFAULT
 }
