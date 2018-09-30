@@ -2,11 +2,9 @@ package io.petproject.model
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions.assertThrows
-import org.junit.jupiter.api.BeforeAll
+import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
-import org.junit.jupiter.api.TestInstance
 
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 internal class OrderTest {
 
     private var physicalItems = ArrayList<Item>()
@@ -16,7 +14,7 @@ internal class OrderTest {
     private var mixedItems = ArrayList<Item>()
     private lateinit var account: Account
 
-    @BeforeAll
+    @BeforeEach
     fun setup() {
         account = Account("email@domain.suffix", Address.Builder()
                 .country("Brazil")
@@ -87,6 +85,8 @@ internal class OrderTest {
     fun `when placing an Order of physical Items, physical_Books should be shipped separately`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = Order(physicalItems, account)
+                .shippingAddress(account.address)
+        order.place()
         assertThat(order.shipments?.size).isEqualTo(2)
     }
 
