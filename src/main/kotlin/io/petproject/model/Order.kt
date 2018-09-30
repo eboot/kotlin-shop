@@ -1,12 +1,12 @@
 package io.petproject.model
 
-data class Order(val items: List<Item>, val account: Account) {
+class Order(val items: List<Item>, val account: Account) {
 
-    lateinit var payment: Payment
-    lateinit var billingAddress: Address
+    val type: Type
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
-    val type: Type
+    lateinit var payment: Payment
+    lateinit var billingAddress: Address
 
     constructor(item: Item, account: Account): this(listOf(item), account)
 
