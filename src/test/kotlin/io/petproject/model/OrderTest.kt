@@ -59,7 +59,7 @@ internal class OrderTest {
     }
 
     @Test
-    fun `when creating a Order with Items of different ProductTypes, throw IllegalStateEx`() {
+    fun `when creating a Order with Items from different ItemGroups, throw IllegalStateEx`() {
         val ex = assertThrows(IllegalStateException::class.java) {
             Order(mixedItems, Account("email@domain.suffix", address))
         }
