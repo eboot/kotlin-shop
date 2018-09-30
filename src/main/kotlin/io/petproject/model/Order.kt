@@ -2,10 +2,11 @@ package io.petproject.model
 
 class Order(val items: List<Item>, val account: Account) {
 
-    val type: Type
+    private val type: Type
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
     var paymentMethod: PaymentMethod? = null
+    var status: ShippingStatus? = null
 
     constructor(item: Item, account: Account) : this(listOf(item), account)
 
@@ -17,13 +18,24 @@ class Order(val items: List<Item>, val account: Account) {
         type = items[0].group
     }
 
-    fun place() {
+    fun shippingAddress(address: Address): Order {
+        this.shippingAddress = address
+        return this
+    }
+
+    fun paymentMethod(paymentMethod: PaymentMethod): Order {
+        this.paymentMethod = paymentMethod
+        return this
+    }
+
+    fun place(): Order {
         if (type == Type.PHYSICAL) {
             checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
             this.shipments = setupPackages()
         }
         checkNotNull(paymentMethod) { "A Payment Method must be informed to place the order" }
-        //TODO("Persist Order and get the Order ID")
+        this.status = ShippingStatus.PENDING
+        return this //TODO("Persist Order and get the Order ID")
     }
 
     private fun setupPackages(): List<Package> {
@@ -38,16 +50,14 @@ class Order(val items: List<Item>, val account: Account) {
                 }.toList()
     }
 
-    fun shippingAddress(address: Address): Order {
-        this.shippingAddress = address
-        return this
-    }
+}
 
-    fun paymentMethod(paymentMethod: PaymentMethod): Order {
-        this.paymentMethod = paymentMethod
-        return this
-    }
-
+enum class ShippingStatus {
+    PENDING,
+    UNSHIPPED,
+    PARTIALLY_SHIPPED,
+    SHIPPED,
+    DELIVERED
 }
 
 
