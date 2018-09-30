@@ -80,12 +80,27 @@ internal class OrderTest {
     }
 
     @Test
-    fun `when placing an Order of physical Items, physical_Books should be shipped separately`() {
+    fun `when placing an Order with different Physical items, Physical_Books should be shipped separately`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = Order(physicalItems, account)
                 .shippingAddress(account.address)
         order.place()
         assertThat(order.shipments?.size).isEqualTo(2)
+    }
+
+    @Test
+    fun `when placing an Order with physical_books, its package must contain notes informing it's free of taxes`() {
+        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
+        val order = Order(physicalItems, account)
+                .shippingAddress(account.address)
+        order.place()
+
+        val parcel: Package? = order.shipments
+                ?.asSequence()
+                ?.find { s -> s.shippingLabel == ShippingLabel.TAX_FREE }
+
+        assertThat(parcel?.shippingLabel?.label)
+                .isEqualTo("Isento de impostos conforme disposto na Constituição Art. 150, VI, d.")
     }
 
 }

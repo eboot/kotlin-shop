@@ -44,7 +44,7 @@ class Order(val items: List<Item>, val account: Account) {
 
 }
 
-data class Package(val items: List<Item>, val shippingAddress: Address, val label: ShippingLabel) {
+data class Package(val items: List<Item>, val shippingAddress: Address, val shippingLabel: ShippingLabel) {
 
     constructor(items: List<Item>, shippingAddress: Address): this(items, shippingAddress, ShippingLabel.DEFAULT)
 
