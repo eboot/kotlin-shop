@@ -53,7 +53,14 @@ internal class ShoppingCartTest {
 
     @Test
     fun `when checking out, build an Order for Physical, another for Digital, and one Order per Membership`() {
-        val orders: List<Order> = shoppingCart.checkout(account)
+        val orders = shoppingCart.checkout(account)
         assertThat(orders.size).isEqualTo(5)
+
+        val groupedOrders = orders
+                .asSequence()
+                .groupBy { order: Order -> order.type }
+        assertThat(groupedOrders[Type.PHYSICAL]?.size).isEqualTo(1)
+        assertThat(groupedOrders[Type.DIGITAL]?.size).isEqualTo(1)
+        assertThat(groupedOrders[Type.MEMBERSHIP]?.size).isEqualTo(3)
     }
 }
