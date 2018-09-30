@@ -6,7 +6,7 @@ interface Order {
 
     val items: List<Item>
     val account: Account
-    val paymentMethod: PaymentMethod
+    val paymentMethod: PaymentMethod?
     var status: OrderStatus
 
     fun place() {
@@ -23,7 +23,7 @@ interface Order {
 
 class PhysicalOrder(override val items: List<Item>,
                     override val account: Account,
-                    override val paymentMethod: PaymentMethod) : Order {
+                    override var paymentMethod: PaymentMethod?) : Order {
 
     override var status: OrderStatus = OrderStatus.PENDING
     var shippingAddress: Address? = null
@@ -64,7 +64,7 @@ class PhysicalOrder(override val items: List<Item>,
 
 class DigitalOrder(override val items: List<Item>,
                    override val account: Account,
-                   override val paymentMethod: PaymentMethod) : Order {
+                   override var paymentMethod: PaymentMethod?) : Order {
 
     override var status: OrderStatus = OrderStatus.PENDING
 
@@ -77,9 +77,9 @@ class DigitalOrder(override val items: List<Item>,
 
 class MembershipOrder(override val items: List<Item>,
                       override val account: Account,
-                      override val paymentMethod: PaymentMethod) : Order {
+                      override var paymentMethod: PaymentMethod?) : Order {
 
-    constructor(item: Item, account: Account, paymentMethod: PaymentMethod): this(listOf(item), account, paymentMethod)
+    constructor(item: Item, account: Account, paymentMethod: PaymentMethod?): this(listOf(item), account, paymentMethod)
 
     override var status: OrderStatus = OrderStatus.PENDING
 }

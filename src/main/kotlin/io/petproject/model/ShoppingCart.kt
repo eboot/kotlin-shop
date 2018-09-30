@@ -25,14 +25,15 @@ class ShoppingCart {
                 .setScale(2, RoundingMode.UNNECESSARY)
     }
 
-    fun checkout(account: Account): List<Order> {
+    fun checkout(acct: Account): List<Order> {
         return items.asSequence()
-                .groupBy { i -> i.group }
+                .groupBy { item -> item.group }
                 .map { (group, items) ->
-                    if (group == Type.MEMBERSHIP)
-                        items.map { i -> Order(i, account) }
-                    else
-                        listOf(Order(items, account))
+                    when (group) {
+                        ItemType.MEMBERSHIP -> items.map { item -> MembershipOrder(item, acct, acct.getDefaultPaymentMethod()) }
+                        ItemType.DIGITAL -> listOf(DigitalOrder(items, acct, acct.getDefaultPaymentMethod()))
+                        else -> listOf(PhysicalOrder(items, acct, acct.getDefaultPaymentMethod()))
+                    }
                 }.flatten()
     }
 }
