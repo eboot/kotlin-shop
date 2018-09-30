@@ -6,7 +6,7 @@ class Order(val items: List<Item>, val account: Account) {
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
     var paymentMethod: PaymentMethod? = null
-    var status: ShippingStatus? = null
+    var status: OrderStatus? = null
 
     constructor(item: Item, account: Account) : this(listOf(item), account)
 
@@ -34,7 +34,7 @@ class Order(val items: List<Item>, val account: Account) {
             this.shipments = setupPackages()
         }
         checkNotNull(paymentMethod) { "A Payment Method must be informed to place the order" }
-        this.status = ShippingStatus.PENDING
+        this.status = OrderStatus.PENDING
         return this //TODO("Persist Order and get the Order ID")
     }
 
@@ -52,7 +52,7 @@ class Order(val items: List<Item>, val account: Account) {
 
 }
 
-enum class ShippingStatus {
+enum class OrderStatus {
     PENDING,
     UNSHIPPED,
     PARTIALLY_SHIPPED,

@@ -95,7 +95,7 @@ internal class OrderTest {
                 .shippingAddress(account.address)
                 .paymentMethod(paymentMethod)
                 .place()
-        assertThat(order.status).isEqualTo(ShippingStatus.PENDING)
+        assertThat(order.status).isEqualTo(OrderStatus.PENDING)
     }
 
     @Test
