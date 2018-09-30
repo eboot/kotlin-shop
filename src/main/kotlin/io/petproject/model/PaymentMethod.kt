@@ -2,6 +2,7 @@ package com.creditas.model
 
 interface PaymentMethod {
 
-    fun charge()
+    val billingAddress: Address
 
+    fun charge()
 }

@@ -72,7 +72,7 @@ internal class OrderTest {
     }
 
     @Test
-    fun `when placing an Order of physical items, throw IllegalStateEx if shippingAddress wasn't informed`() {
+    fun `when placing an Order with Physical items, a shippingAddress must be informed`() {
         val ex = assertThrows(IllegalStateException::class.java) {
             Order(physicalItems, account).place()
         }
@@ -101,6 +101,16 @@ internal class OrderTest {
 
         assertThat(parcel?.shippingLabel?.label)
                 .isEqualTo("Isento de impostos conforme disposto na Constituição Art. 150, VI, d.")
+    }
+
+    @Test
+    fun `when placing an Order, a Payment Method must be informed`() {
+        val ex = assertThrows(IllegalStateException::class.java) {
+            Order(physicalItems, account)
+                    .shippingAddress(account.address)
+                    .place()
+        }
+        assertThat(ex.message).isEqualTo("A Payment Method must be informed to place the order")
     }
 
 }
