@@ -1,5 +1,75 @@
 package io.petproject.model
 
+import java.math.BigDecimal
+
+interface OrderIface {
+
+    val items: List<Item>
+    val account: Account
+    val paymentMethod: PaymentMethod
+    var status: OrderStatus
+
+    fun place()
+
+    fun total(): BigDecimal {
+        return items.asSequence()
+                .map(Item::subtotal)
+                .reduce(BigDecimal::add)
+    }
+
+}
+
+class PhysicalOrder(override val items: List<Item>,
+                    override val account: Account,
+                    override val paymentMethod: PaymentMethod) : OrderIface {
+
+    override var status: OrderStatus = OrderStatus.PENDING
+
+    override
+    fun place() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override
+    fun total(): BigDecimal {
+        TODO("Compute Items Subtotal + Shipping Costs")
+    }
+
+}
+
+class DigitalOrder(override val items: List<Item>,
+                   override val account: Account,
+                   override val paymentMethod: PaymentMethod) : OrderIface {
+
+    override var status: OrderStatus = OrderStatus.PENDING
+
+    override fun place() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun total(): BigDecimal {
+        TODO("Compute Items Subtotal + Discounts for Digital Media")
+
+    }
+
+}
+
+class MembershipOrder(override val items: List<Item>,
+                      override val account: Account,
+                      override val paymentMethod: PaymentMethod) : OrderIface {
+
+    override var status: OrderStatus = OrderStatus.PENDING
+
+    override fun place() {
+        TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+    }
+
+    override fun total(): BigDecimal {
+        TODO("Compute Items Subtotal for Membership")
+    }
+}
+
+
 class Order(val items: List<Item>, val account: Account) {
 
     val type: Type
