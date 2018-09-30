@@ -89,12 +89,22 @@ internal class OrderTest {
     }
 
     @Test
+    fun `when placing an Order successfully, status should be PENDING`() {
+        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
+        val order = Order(physicalItems, account)
+                .shippingAddress(account.address)
+                .paymentMethod(paymentMethod)
+                .place()
+        assertThat(order.status).isEqualTo(ShippingStatus.PENDING)
+    }
+
+    @Test
     fun `when placing an Order with different Physical items, Physical_Books should be shipped separately`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = Order(physicalItems, account)
                 .shippingAddress(account.address)
                 .paymentMethod(paymentMethod)
-        order.place()
+                .place()
         assertThat(order.shipments?.size).isEqualTo(2)
     }
 
@@ -104,7 +114,7 @@ internal class OrderTest {
         val order = Order(physicalItems, account)
                 .shippingAddress(account.address)
                 .paymentMethod(paymentMethod)
-        order.place()
+                .place()
 
         val parcel: Package? = order.shipments
                 ?.asSequence()

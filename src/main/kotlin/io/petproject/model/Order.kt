@@ -2,7 +2,7 @@ package io.petproject.model
 
 class Order(val items: List<Item>, val account: Account) {
 
-    private val type: Type
+    val type: Type
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
     var paymentMethod: PaymentMethod? = null
