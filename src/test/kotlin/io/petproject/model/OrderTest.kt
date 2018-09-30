@@ -66,7 +66,7 @@ internal class OrderTest {
 
 
     @Test
-    fun `when placing an Order, there must be at least one item in the list`() {
+    fun `when placing a PhysicalOrder, there must be at least one item in the list`() {
         val ex = assertThrows(IllegalArgumentException::class.java) {
             val order = PhysicalOrder(ArrayList(), account, paymentMethod)
             order.place()
@@ -75,7 +75,7 @@ internal class OrderTest {
     }
 
     @Test
-    fun `when placing an Order with Physical items, a shippingAddress must be informed`() {
+    fun `when placing a Physical Order, a shippingAddress must be informed`() {
         val ex = assertThrows(IllegalStateException::class.java) {
             val order = PhysicalOrder(physicalItems, account, paymentMethod)
             order.place()
@@ -84,28 +84,45 @@ internal class OrderTest {
     }
 
     @Test
-    fun `when placing an Order with different Physical items, Physical_Books should be shipped separately`() {
+    fun `when placing a Physical Order with different Physical and Physical_Books, there should be different shipments`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = PhysicalOrder(physicalItems, account, paymentMethod)
                 .shippingAddress(account.address)
-
         order.place()
         assertThat(order.shipments?.size).isEqualTo(2)
     }
 
     @Test
-    fun `when placing an Order with physical_books, its package must contain notes informing it's free of taxes`() {
+    fun `when placing a Physical Order with physical_books, its package must contain notes informing it's free of taxes`() {
         val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
         val order = PhysicalOrder(physicalItems, account, paymentMethod)
                 .shippingAddress(account.address)
-
         order.place()
+
         val parcel: Package? = order.shipments
                 ?.asSequence()
                 ?.find { s -> s.shippingLabel == ShippingLabel.TAX_FREE }
 
         assertThat(parcel?.shippingLabel?.label)
                 .isEqualTo("Isento de impostos conforme disposto na Constituição Art. 150, VI, d.")
+    }
+
+    @Test
+    fun `when placing a DigitalOrder, there must be at least one item in the list`() {
+        val ex = assertThrows(IllegalArgumentException::class.java) {
+            val order = DigitalOrder(ArrayList(), account, paymentMethod)
+            order.place()
+        }
+        assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
+    }
+
+    @Test
+    fun `when placing a MembershipOrder, there must be at least one item in the list`() {
+        val ex = assertThrows(IllegalArgumentException::class.java) {
+            val order = MembershipOrder(ArrayList(), account, paymentMethod)
+            order.place()
+        }
+        assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
     }
 
 }
