@@ -63,7 +63,7 @@ internal class OrderTest {
         val ex = assertThrows(IllegalStateException::class.java) {
             Order(mixedItems, Account("email@domain.suffix", address))
         }
-        assertThat(ex.message).isEqualTo("Items must belong to the same Product Type")
+        assertThat(ex.message).isEqualTo("Items must belong to the same Item Group")
     }
 
 }
