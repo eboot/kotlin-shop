@@ -15,7 +15,7 @@ internal class ShoppingCartTest {
     fun `setup`() {
         val console = Product("PS4 Slim 1TB", Category.PHYSICAL, 1899.00)
         val chair = Product("PDP Chair", Category.PHYSICAL, 399.00)
-        val netflix = Product("Nnetflix Familiar Plan", Category.SUBSCRIPTION, 29.90)
+        val netflix = Product("Netflix Familiar Plan", Category.SUBSCRIPTION, 29.90)
         val spotify = Product("Spotify Premium", Category.SUBSCRIPTION, 14.90)
         val amazon = Product("Amazon Prime", Category.SUBSCRIPTION, 12.90)
         val book = Product("Cracking the Code Interview", Category.PHYSICAL_BOOK, 219.57)

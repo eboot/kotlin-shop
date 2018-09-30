@@ -7,11 +7,11 @@ import org.junit.jupiter.api.Test
 
 internal class OrderTest {
 
-    private var physicalItems = ArrayList<Item>()
-    private var physicalTaxFreeItems = ArrayList<Item>()
-    private var digitalItems = ArrayList<Item>()
-    private var subscriptions = ArrayList<Item>()
-    private var mixedItems = ArrayList<Item>()
+    private lateinit var physicalItems: List<Item>
+    private lateinit var physicalTaxFreeItems: List<Item>
+    private lateinit var digitalItems: List<Item>
+    private lateinit var subscriptions: List<Item>
+    private lateinit var mixedItems: List<Item>
     private lateinit var account: Account
 
     @BeforeEach
@@ -25,36 +25,34 @@ internal class OrderTest {
                 .build()
         )
 
-        val console = Product("game console", Category.PHYSICAL, 1899.00)
+        val console = Product("PS4 Slim 1TB", Category.PHYSICAL, 1899.00)
         val chair = Product("PDP Chair", Category.PHYSICAL, 399.00)
-        physicalItems.addAll(listOf(
-                Item(console, 1),
-                Item(chair, 2)
-        ))
-
-        val netflix = Product("netflix familiar plan", Category.SUBSCRIPTION, 29.90)
-        val spotify = Product("spotify premium", Category.SUBSCRIPTION, 14.90)
-        subscriptions.addAll(listOf(
-                Item(netflix, 1),
-                Item(spotify, 1)
-        ))
-
         val book = Product("Cracking the Code Interview", Category.PHYSICAL_BOOK, 219.57)
         val anotherBook = Product("The Hitchhiker's Guide to the Galaxy", Category.PHYSICAL_BOOK, 120.00)
-        physicalTaxFreeItems.addAll(listOf(
-                Item(book, 2),
-                Item(anotherBook, 1)
-        ))
-
         val musicDigitalAlbum = Product("Stairway to Heaven", Category.DIGITAL_MUSIC, 5.00)
         val videoGameDigitalCopy = Product("Nier:Automata", Category.DIGITAL_VIDEO_GAMES, 129.90)
-        digitalItems.addAll(listOf(
+        val netflix = Product("Netflix Familiar Plan", Category.SUBSCRIPTION, 29.90)
+        val spotify = Product("Spotify Premium", Category.SUBSCRIPTION, 14.90)
+        val amazon = Product("Amazon Prime", Category.SUBSCRIPTION, 12.90)
+
+        physicalItems = listOf(
+                Item(console, 1),
+                Item(chair, 2)
+        )
+        physicalTaxFreeItems = listOf(
+                Item(book, 2),
+                Item(anotherBook, 1)
+        )
+        digitalItems = listOf(
                 Item(musicDigitalAlbum, 1),
                 Item(videoGameDigitalCopy, 4)
-        ))
-
-        mixedItems.addAll(physicalItems)
-        mixedItems.addAll(digitalItems)
+        )
+        subscriptions = listOf(
+                Item(netflix, 1),
+                Item(spotify, 1),
+                Item(amazon, 1)
+        )
+        mixedItems = listOf(physicalItems, digitalItems).flatten()
     }
 
     @Test
