@@ -22,3 +22,10 @@ data class Order(val items: List<Item>, val account: Account) {
     }
 
 }
+
+data class Package(val items: List<Item>) {
+
+    init {
+        require(items.isNotEmpty()) { "There must be at least one item to package" }
+    }
+}
