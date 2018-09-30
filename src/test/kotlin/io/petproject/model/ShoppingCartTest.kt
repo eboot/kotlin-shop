@@ -13,7 +13,7 @@ internal class ShoppingCartTest {
 
     @BeforeEach
     fun `setup`() {
-        val console = Product("game console", Category.PHYSICAL, 1899.00)
+        val console = Product("PS4 Slim 1TB", Category.PHYSICAL, 1899.00)
         val chair = Product("PDP Chair", Category.PHYSICAL, 399.00)
         val netflix = Product("netflix familiar plan", Category.SUBSCRIPTION, 29.90)
         val spotify = Product("spotify premium", Category.SUBSCRIPTION, 14.90)

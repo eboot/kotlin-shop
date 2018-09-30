@@ -48,7 +48,7 @@ internal class OrderTest {
         ))
 
         val musicDigitalAlbum = Product("Stairway to Heaven", Category.DIGITAL_MUSIC, 5.00)
-        val videoGameDigitalCopy = Product("Nier:Automata", Category.DIGITAL_MUSIC, 129.90)
+        val videoGameDigitalCopy = Product("Nier:Automata", Category.DIGITAL_VIDEO_GAMES, 129.90)
         digitalItems.addAll(listOf(
                 Item(musicDigitalAlbum, 1),
                 Item(videoGameDigitalCopy, 4)
