@@ -20,6 +20,33 @@ internal class ItemTest {
                 val product = Product("product", Category.PHYSICAL, 1.99)
                 val item = Item(product, 10)
                 assertThat(item.subtotal.toPlainString()).isEqualTo("19.90")
+            },
+
+            DynamicTest.dynamicTest("when product category is a digital copy, item_group must be Digital") {
+                listOf(Category.DIGITAL_MUSIC,
+                        Category.DIGITAL_SOFTWARE,
+                        Category.DIGITAL_COPY_MOVIES_TV,
+                        Category.DIGITAL_VIDEO_GAMES
+                ).map { category ->
+                    Item(Product("product", category, 10.00), 1)
+                }.forEach { item ->
+                    run { assertThat(item.group).isEqualTo(ItemGroup.DIGITAL) }
+                }
+            },
+
+            DynamicTest.dynamicTest("when product category is of physical type, item_group must be Physical") {
+                listOf(Category.PHYSICAL,
+                        Category.PHYSICAL_BOOK
+                ).map { category ->
+                    Item(Product("product", category, 10.00), 1)
+                }.forEach { item ->
+                    run { assertThat(item.group).isEqualTo(ItemGroup.PHYSICAL) }
+                }
+            },
+
+            DynamicTest.dynamicTest("when product category is a subscription, item_group must be Membership") {
+                val item = Item(Product("product", Category.SUBSCRIPTION, 10.00), 1)
+                assertThat(item.group).isEqualTo(ItemGroup.MEMBERSHIP)
             }
     )
 }
