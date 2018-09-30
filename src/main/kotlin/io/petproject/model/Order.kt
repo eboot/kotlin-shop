@@ -21,7 +21,18 @@ data class Order(val items: List<Item>, val account: Account) {
     fun place() {
         if (type == Type.PHYSICAL) {
             checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
+            shipments = shippingPackages()
         }
+    }
+
+    private fun shippingPackages(): List<Package> {
+        return items.asSequence()
+                .groupBy { item -> when(item.product.category) {
+                    Category.PHYSICAL_BOOK -> "A"
+                    else -> "B"
+                }}.map {
+                    (_, items) -> Package(items, account.address)
+                }.toList()
     }
 
     fun shippingAddress(address: Address): Order {
