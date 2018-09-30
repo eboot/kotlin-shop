@@ -11,13 +11,13 @@ internal class ItemTest {
     fun `Item Tests`() = listOf(
             DynamicTest.dynamicTest("when quantity is lower than or equalTo 0, throw IllegalArgEx") {
                 assertThrows(IllegalArgumentException::class.java) {
-                    val product = Product("product", ProductType.PHYSICAL, 1.99)
+                    val product = Product("product", Category.PHYSICAL, 1.99)
                     Item(product, 0)
                 }
             },
 
             DynamicTest.dynamicTest("when querying for subtotal, compute unit_price * units") {
-                val product = Product("product", ProductType.PHYSICAL, 1.99)
+                val product = Product("product", Category.PHYSICAL, 1.99)
                 val item = Item(product, 10)
                 assertThat(item.subtotal.toPlainString()).isEqualTo("19.90")
             }

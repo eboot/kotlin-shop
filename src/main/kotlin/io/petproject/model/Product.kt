@@ -3,7 +3,7 @@ package io.petproject.model
 import java.math.BigDecimal
 import java.math.RoundingMode
 
-data class Product(val name: String, val type: ProductType, private val _price: Double) {
+data class Product(val name: String, val category: Category, private val _price: Double) {
     val price: BigDecimal = _price
             .toBigDecimal()
             .setScale(2, RoundingMode.HALF_UP)
@@ -14,9 +14,12 @@ data class Product(val name: String, val type: ProductType, private val _price: 
 
 }
 
-enum class ProductType {
+enum class Category {
     PHYSICAL,
-    PHYSICAL_TAX_FREE,
-    DIGITAL_MEDIA,
-    MEMBERSHIP
+    PHYSICAL_BOOK,
+    DIGITAL_MUSIC,
+    DIGITAL_COPY_MOVIES_TV,
+    DIGITAL_VIDEO_GAMES,
+    DIGITAL_SOFTWARE,
+    SUBSCRIPTION
 }

@@ -27,7 +27,7 @@ class ShoppingCart {
 
     fun checkout(account: Account): List<Order> {
         return items.asSequence()
-                .groupBy { i -> i.product.type }
+                .groupBy { i -> i.product.category }
                 .map{ (_, list) -> Order(list, account)}
                 .toList()
     }

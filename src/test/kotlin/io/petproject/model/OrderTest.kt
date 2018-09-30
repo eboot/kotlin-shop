@@ -26,29 +26,29 @@ internal class OrderTest {
                 .streetName("Av Paulista, 1000")
                 .build()
 
-        val console = Product("game console", ProductType.PHYSICAL, 1899.00)
-        val chair = Product("PDP Chair", ProductType.PHYSICAL, 399.00)
+        val console = Product("game console", Category.PHYSICAL, 1899.00)
+        val chair = Product("PDP Chair", Category.PHYSICAL, 399.00)
         physicalItems.addAll(listOf(
                 Item(console, 1),
                 Item(chair, 2)
         ))
 
-        val netflix = Product("netflix familiar plan", ProductType.SUBSCRIPTION, 29.90)
-        val spotify = Product("spotify premium", ProductType.SUBSCRIPTION, 14.90)
+        val netflix = Product("netflix familiar plan", Category.SUBSCRIPTION, 29.90)
+        val spotify = Product("spotify premium", Category.SUBSCRIPTION, 14.90)
         subscriptions.addAll(listOf(
                 Item(netflix, 1),
                 Item(spotify, 1)
         ))
 
-        val book = Product("Cracking the Code Interview", ProductType.PHYSICAL_TAX_FREE, 219.57)
-        val anotherBook = Product("The Hitchhiker's Guide to the Galaxy", ProductType.PHYSICAL_TAX_FREE, 120.00)
+        val book = Product("Cracking the Code Interview", Category.PHYSICAL_BOOK, 219.57)
+        val anotherBook = Product("The Hitchhiker's Guide to the Galaxy", Category.PHYSICAL_BOOK, 120.00)
         physicalTaxFreeItems.addAll(listOf(
                 Item(book, 2),
                 Item(anotherBook, 1)
         ))
 
-        val musicDigitalAlbum = Product("Stairway to Heaven", ProductType.DIGITAL, 5.00)
-        val videoGameDigitalCopy = Product("Nier:Automata", ProductType.DIGITAL, 129.90)
+        val musicDigitalAlbum = Product("Stairway to Heaven", Category.DIGITAL_MUSIC, 5.00)
+        val videoGameDigitalCopy = Product("Nier:Automata", Category.DIGITAL_MUSIC, 129.90)
         digitalItems.addAll(listOf(
                 Item(musicDigitalAlbum, 1),
                 Item(videoGameDigitalCopy, 4)
