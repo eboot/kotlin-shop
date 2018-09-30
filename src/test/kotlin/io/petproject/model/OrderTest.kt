@@ -14,17 +14,18 @@ internal class OrderTest {
     private var digitalItems = ArrayList<Item>()
     private var subscriptions = ArrayList<Item>()
     private var mixedItems = ArrayList<Item>()
-    private lateinit var address: Address
+    private lateinit var account: Account
 
     @BeforeAll
     fun setup() {
-        address = Address.Builder()
+        account = Account("email@domain.suffix", Address.Builder()
                 .country("Brazil")
                 .city("Sao Paulo")
                 .state("SP")
                 .zipCode("01000-000")
                 .streetName("Av Paulista, 1000")
                 .build()
+        )
 
         val console = Product("game console", Category.PHYSICAL, 1899.00)
         val chair = Product("PDP Chair", Category.PHYSICAL, 399.00)
@@ -61,9 +62,18 @@ internal class OrderTest {
     @Test
     fun `when creating a Order with Items from different ItemGroups, throw IllegalStateEx`() {
         val ex = assertThrows(IllegalStateException::class.java) {
-            Order(mixedItems, Account("email@domain.suffix", address))
+            Order(mixedItems, account)
         }
         assertThat(ex.message).isEqualTo("Items must belong to the same Item Group")
     }
+
+    @Test
+    fun `when creating an Order, there must be at least one item in the list`() {
+        val ex = assertThrows(IllegalArgumentException::class.java) {
+            Order(ArrayList(), account)
+        }
+        assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
+    }
+
 
 }
