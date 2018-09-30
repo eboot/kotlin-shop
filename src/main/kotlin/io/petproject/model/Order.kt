@@ -5,8 +5,8 @@ class Order(val items: List<Item>, val account: Account) {
     val type: Type
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
-    lateinit var paymentMethod: PaymentMethod
-    lateinit var billingAddress: Address
+    var paymentMethod: PaymentMethod? = null
+    var billingAddress: Address? = null
 
     constructor(item: Item, account: Account): this(listOf(item), account)
 
@@ -23,6 +23,8 @@ class Order(val items: List<Item>, val account: Account) {
             checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
             shipments = setupPackages()
         }
+        checkNotNull(paymentMethod) { "A Payment Method must be informed to place the order" }
+        billingAddress = paymentMethod?.billingAddress
     }
 
     private fun setupPackages(): List<Package> {
@@ -39,6 +41,11 @@ class Order(val items: List<Item>, val account: Account) {
 
     fun shippingAddress(address: Address): Order {
         this.shippingAddress = address
+        return this
+    }
+
+    fun paymentMethod(paymentMethod: PaymentMethod): Order {
+        this.paymentMethod = paymentMethod
         return this
     }
 

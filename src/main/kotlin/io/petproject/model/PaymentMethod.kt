@@ -1,4 +1,4 @@
-package com.creditas.model
+package io.petproject.model
 
 interface PaymentMethod {
 
