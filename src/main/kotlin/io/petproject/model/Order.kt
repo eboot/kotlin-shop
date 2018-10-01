@@ -11,7 +11,7 @@ interface Order {
 
     fun place() {
         require(items.isNotEmpty()) { "There must be at least one item to place the Order" }
-        requireNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
+        checkNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
     }
 
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
