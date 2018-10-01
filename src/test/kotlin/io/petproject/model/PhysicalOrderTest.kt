@@ -2,6 +2,7 @@ package io.petproject.model
 
 import org.assertj.core.api.Assertions.assertThat
 import org.junit.jupiter.api.Assertions
+import org.junit.jupiter.api.Assertions.assertThrows
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 
@@ -72,19 +73,15 @@ internal class PhysicalOrderTest {
     }
 
     @Test
-    fun `when placing a Physical Order with different Physical and Physical_Books, there should be different shipments`() {
-        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
-        val order = PhysicalOrder(physicalItems, account, paymentMethod)
-                .shippingAddress(account.address)
+    fun `when placing a Physical Order with Physical and Physical_Books, there should be different shipments`() {
+        val order = buildOrder() as PhysicalOrder
         order.place()
         assertThat(order.shipments?.size).isEqualTo(2)
     }
 
     @Test
     fun `when placing a Physical Order with physical_books, its package must contain notes informing it's free of taxes`() {
-        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
-        val order = PhysicalOrder(physicalItems, account, paymentMethod)
-                .shippingAddress(account.address)
+        val order = buildOrder() as PhysicalOrder
         order.place()
 
         val parcel: Package? = order.shipments
@@ -93,6 +90,84 @@ internal class PhysicalOrderTest {
 
         assertThat(parcel?.shippingLabel?.label)
                 .isEqualTo("Isento de impostos conforme disposto na Constituição Art. 150, VI, d.")
+    }
+
+    @Test
+    fun `when placing a Physical Order, subtotal should compute overall sum of all Item prices`() {
+        val order = buildOrder()
+        order.place()
+        assertThat(order.subtotal().toPlainString()).isEqualTo("3256.14")
+    }
+
+    @Test
+    fun `when placing a Physical Order, total should compute subtotal plus shippingCosts`() {
+        val order = buildOrder()
+        order.place()
+        assertThat(order.total().toPlainString()).isEqualTo("3276.14")
+    }
+
+    @Test
+    fun `when paying for Physical Order, throw IllegalStateEx if Status is not PENDING`() {
+        val order = buildOrder()
+        val ex = assertThrows(IllegalStateException::class.java) {
+            order.pay()
+        }
+        assertThat(ex.message).isEqualTo("")
+    }
+
+    @Test
+    fun `when paying for Physical Order, Status should be updated to UNSHIPPED once the payment is done`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        assertThat(order.status).isEqualTo(OrderStatus.UNSHIPPED)
+    }
+
+    @Test
+    fun `when fulfilling a Physical Order, throw IllegalStateEx if Status is not PAYMENT_COMPLETE`() {
+        val order = buildOrder()
+        order.place()
+        val ex = assertThrows(IllegalStateException::class.java) {
+            order.fulfill()
+        }
+        assertThat(ex.message).isEqualTo("")
+    }
+
+    @Test
+    fun `when fulfilling a Physical Order, Status should be updated to SHIPPED`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        order.fulfill()
+        assertThat(order.status).isEqualTo(OrderStatus.SHIPPED)
+    }
+
+    @Test
+    fun `when completing a Physical Order, throw IllegalStateEx if Status is not SHIPPED`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        val ex = assertThrows(IllegalStateException::class.java) {
+            order.complete()
+        }
+        assertThat(ex.message).isEqualTo("")
+    }
+
+    @Test
+    fun `when completing a Physical Order, Status should be updated to DELIVERED`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        order.fulfill()
+        order.complete()
+        assertThat(order.status).isEqualTo(OrderStatus.DELIVERED)
+    }
+
+    private fun buildOrder(): Order {
+        val physicalItems = listOf(physicalItems, physicalTaxFreeItems).flatten()
+        return PhysicalOrder(physicalItems, account, null)
+                .shippingAddress(account.address)
+                .paymentMethod(paymentMethod)
     }
 
 }
