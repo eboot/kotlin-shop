@@ -8,6 +8,7 @@ data class Product(val name: String, val category: Category, private val _price:
     val price: BigDecimal = _price
             .toBigDecimal()
             .setScale(2, RoundingMode.HALF_UP)
+
     init {
         require(name.isNotBlank()) { "Product name cannot be blank" }
         require(_price > 0.0) { "Produce price must be > 0" }

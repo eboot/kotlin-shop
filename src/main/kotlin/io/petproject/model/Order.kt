@@ -23,7 +23,7 @@ interface Order {
 
     fun fulfill() {
         check((status.id < OrderStatus.UNSHIPPED.id).not()) { "Order must be placed and payed before it can be fulfilled" }
-        check((status.id >= OrderStatus.SHIPPED.id).not()) { "Order Fulfillment has been processed already"}
+        check((status.id >= OrderStatus.SHIPPED.id).not()) { "Order Fulfillment has been processed already" }
     }
 
     fun complete() {
@@ -164,7 +164,7 @@ class MembershipOrder(override val items: List<Item>,
     override
     fun place() {
         checkNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
-        check((items.size == 1)) { "There must be only 1 subscription per Membership Order"}
+        check((items.size == 1)) { "There must be only 1 subscription per Membership Order" }
         this.status = OrderStatus.PENDING
     }
 

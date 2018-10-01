@@ -8,7 +8,7 @@ data class Item(val product: Product, var quantity: Int) {
             .multiply(quantity.toBigDecimal())
 
     val group: ItemType by lazy {
-        when(product.category) {
+        when (product.category) {
             Category.DIGITAL_COPY_MOVIES_TV -> ItemType.DIGITAL
             Category.DIGITAL_MUSIC -> ItemType.DIGITAL
             Category.DIGITAL_VIDEO_GAMES -> ItemType.DIGITAL
