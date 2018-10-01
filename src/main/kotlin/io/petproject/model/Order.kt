@@ -37,7 +37,7 @@ class PhysicalOrder(override val items: List<Item>,
                     override var paymentMethod: PaymentMethod?) : Order {
 
     override val additional: HashMap<String, BigDecimal> = HashMap()
-    override var status: OrderStatus = OrderStatus.PENDING
+    override var status: OrderStatus = OrderStatus.UNKNOWN
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
 
@@ -45,12 +45,12 @@ class PhysicalOrder(override val items: List<Item>,
     fun place() {
         super.place()
         checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
-        shipments = setupPackages()
-
-        additional["Shipping & Handling"] = shipments?.asSequence()
+        this.shipments = setupPackages()
+        this.additional["Shipping & Handling"] = shipments?.asSequence()
                 ?.map(Package::getShippingCosts)
                 ?.reduce(BigDecimal::add)
                 ?: BigDecimal.ZERO
+        this.status = OrderStatus.PENDING
     }
 
     fun shippingAddress(address: Address): PhysicalOrder {
@@ -77,12 +77,13 @@ class DigitalOrder(override val items: List<Item>,
                    override var paymentMethod: PaymentMethod?) : Order {
 
     override val additional: HashMap<String, BigDecimal> = HashMap()
-    override var status: OrderStatus = OrderStatus.PENDING
+    override var status: OrderStatus = OrderStatus.UNKNOWN
 
     override
     fun place() {
         super.place()
-        additional["Voucher"] = BigDecimal(-10)
+        this.additional["Voucher"] = BigDecimal(-10)
+        this.status = OrderStatus.PENDING
     }
 }
 
@@ -91,12 +92,19 @@ class MembershipOrder(override val items: List<Item>,
                       override var paymentMethod: PaymentMethod?) : Order {
 
     override val additional: HashMap<String, BigDecimal> = HashMap()
-    override var status: OrderStatus = OrderStatus.PENDING
+    override var status: OrderStatus = OrderStatus.UNKNOWN
 
     constructor(item: Item, account: Account, paymentMethod: PaymentMethod?) : this(listOf(item), account, paymentMethod)
+
+    override
+    fun place() {
+        super.place()
+        this.status = OrderStatus.PENDING
+    }
 }
 
 enum class OrderStatus {
+    UNKNOWN,
     PENDING,
     UNSHIPPED,
     PARTIALLY_SHIPPED,
