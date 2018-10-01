@@ -17,10 +17,10 @@ interface Order {
         checkNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
     }
 
-    fun pay() {
+    fun pay(): Invoice {
         check((status.id < OrderStatus.PENDING.id).not()) { "Order must be placed before it can be payed" }
         check((status.id >= OrderStatus.UNSHIPPED.id).not()) { "Order Payment has been processed already" }
-        this.invoice = Invoice(items, subtotal(), additional, total(), paymentMethod!!.billingAddress)
+        return Invoice(this)
     }
 
     fun fulfill() {
@@ -81,11 +81,11 @@ class PhysicalOrder(override val items: List<Item>,
     }
 
     override
-    fun pay() {
-        super.pay()
+    fun pay(): Invoice {
         // TODO: Process Payment
-        this.invoice = Invoice(items, subtotal(), additional, total(), paymentMethod!!.billingAddress, shipments)
+        val invoice = super.pay()
         this.status = OrderStatus.UNSHIPPED
+        return invoice
     }
 
     override
@@ -143,10 +143,11 @@ class DigitalOrder(override val items: List<Item>,
     }
 
     override
-    fun pay() {
-        super.pay()
+    fun pay(): Invoice {
         // TODO: Process Payment
+        val invoice = super.pay()
         this.status = OrderStatus.UNSENT
+        return invoice
     }
 
     override
@@ -189,10 +190,11 @@ class MembershipOrder(override val items: List<Item>,
     }
 
     override
-    fun pay() {
-        super.pay()
+    fun pay(): Invoice {
         // TODO: Process Payment
+        val invoice = super.pay()
         this.status = OrderStatus.PENDING_ACTIVATION
+        return invoice
     }
 
     override

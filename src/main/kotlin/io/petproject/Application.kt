@@ -38,13 +38,12 @@ fun main(args: Array<String>) {
             (order as? PhysicalOrder)?.shippingAddress(address)
             order.paymentMethod(paymentMethod)
             order.place()
-            order.pay()
         }
-
         run {
-            val orderType = order.invoice!!.items[0].group
+            val invoice = order.pay()
+            val orderType = invoice!!.items[0].group
             println("====================  $orderType ORDER INVOICE =========================")
-            println(gson.toJson(order.invoice))
+            println(gson.toJson(invoice))
         }
     }
 
