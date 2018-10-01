@@ -1,6 +1,7 @@
 package io.petproject.model
 
 import java.math.BigDecimal
+import java.math.RoundingMode
 
 interface Order {
 
@@ -19,6 +20,7 @@ interface Order {
     fun pay() {
         check((status.id < OrderStatus.PENDING.id).not()) { "Order must be placed before it can be payed" }
         check((status.id >= OrderStatus.UNSHIPPED.id).not()) { "Order Payment has been processed already" }
+        this.invoice = Invoice(items, subtotal(), additional, total(), paymentMethod!!.billingAddress)
     }
 
     fun fulfill() {
@@ -64,10 +66,11 @@ class PhysicalOrder(override val items: List<Item>,
         super.place()
         checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
         this.shipments = setupPackages()
-        this.additional["Shipping & Handling"] = shipments?.asSequence()
+        this.additional["Shipping and Handling"] = shipments?.asSequence()
                 ?.map(Package::getShippingCosts)
                 ?.reduce(BigDecimal::add)
                 ?: BigDecimal.ZERO
+                .setScale(2, RoundingMode.UNNECESSARY)
         this.status = OrderStatus.PENDING
     }
 
@@ -75,7 +78,7 @@ class PhysicalOrder(override val items: List<Item>,
     fun pay() {
         super.pay()
         // TODO: Process Payment
-        this.invoice = Invoice(items, paymentMethod!!.billingAddress, shippingAddress)
+        this.invoice = Invoice(items, subtotal(), additional, total(), paymentMethod!!.billingAddress, shippingAddress)
         this.status = OrderStatus.UNSHIPPED
     }
 
@@ -123,7 +126,7 @@ class DigitalOrder(override val items: List<Item>,
     override
     fun place() {
         super.place()
-        this.additional["Voucher"] = BigDecimal(-10)
+        this.additional["Voucher"] = BigDecimal(-10).setScale(2, RoundingMode.UNNECESSARY)
         this.status = OrderStatus.PENDING
     }
 
@@ -131,7 +134,6 @@ class DigitalOrder(override val items: List<Item>,
     fun pay() {
         super.pay()
         // TODO: Process Payment
-        this.invoice = Invoice(items, paymentMethod!!.billingAddress)
         this.status = OrderStatus.UNSENT
     }
 
@@ -172,7 +174,6 @@ class MembershipOrder(override val items: List<Item>,
     fun pay() {
         super.pay()
         // TODO: Process Payment
-        this.invoice = Invoice(items, paymentMethod!!.billingAddress)
         this.status = OrderStatus.PENDING_ACTIVATION
     }
 
