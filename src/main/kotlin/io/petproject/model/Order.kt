@@ -16,14 +16,20 @@ interface Order {
     }
 
     fun pay() {
-        require(status == OrderStatus.UNKNOWN) { "Order must be placed before it can be payed" }
+        check((status.id < OrderStatus.PENDING.id).not()) { "Order must be placed before it can be payed" }
+        check((status.id >= OrderStatus.PAYMENT_COMPLETE.id).not()) { "Order Payment has been processed already" }
+        this.status = OrderStatus.PAYMENT_COMPLETE
     }
 
     fun fulfill() {
-        require(status.id > OrderStatus.PENDING.id) { "Order must be placed before it can be fulfilled" }
+        check((status.id < OrderStatus.PAYMENT_COMPLETE.id).not()) { "Order must be placed and payed before it can be fulfilled" }
+        check((status.id >= OrderStatus.SENT.id).not()) { "Order Fulfillment has been processed already"}
     }
 
-    fun complete()
+    fun complete() {
+        check((status.id < OrderStatus.SHIPPED.id).not()) { "Order must have confirmed shipping/sent before it can be complete" }
+        check((status.id > OrderStatus.DELIVERED.id).not()) { "Order has been delivered already" }
+    }
 
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
         this.paymentMethod = paymentMethod
@@ -68,6 +74,7 @@ class PhysicalOrder(override val items: List<Item>,
         super.fulfill()
         // TODO: Notify Buyer via email
         // TODO: Notify Seller about the Order to initiate the Processing & Shipping
+        this.status = OrderStatus.SHIPPED
     }
 
     override
@@ -156,6 +163,7 @@ class MembershipOrder(override val items: List<Item>,
 enum class OrderStatus(val id: Int = 0) {
     UNKNOWN,
     PENDING(100),
+    PAYMENT_COMPLETE(150),
     UNSHIPPED(200),
     UNSENT(200),
     PENDING_ACTIVATION(200),
@@ -164,4 +172,8 @@ enum class OrderStatus(val id: Int = 0) {
     DELIVERED(400),
     REEDEEMED(400),
     ACTIVATED(400)
+}
+
+fun main(args: Array<String>) {
+    check(!(0 < 1)) { "prints if it is true " }
 }
