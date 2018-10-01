@@ -1,8 +1,8 @@
 buildscript {
     ext {
         kotlin_version = '1.2.71'
+        junit_version = '5.2.0'
         assertj_version = '3.11.0'
-
     }
     repositories {
         mavenCentral()
@@ -17,14 +17,29 @@ apply plugin: "kotlin"
 group 'io.petproject'
 version '1.0-SNAPSHOT'
 
+jar {
+    manifest {
+        attributes 'Main-Class': 'io.petproject.ApplicationKt'
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+test {
+    useJUnitPlatform()
+}
+
 repositories {
     mavenCentral()
 }
 
 dependencies {
     compile("org.jetbrains.kotlin:kotlin-stdlib-jdk8:$kotlin_version")
-    testCompile("org.jetbrains.kotlin:kotlin-test-junit5:$kotlin_version")
+    compile("com.google.code.gson:gson:$gson_version")
+    testCompile("org.junit.jupiter:junit-jupiter-api:$junit_version")
     testCompile("org.assertj:assertj-core:$assertj_version")
+    runtime("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 }
 
 compileKotlin {
