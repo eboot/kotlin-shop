@@ -14,7 +14,8 @@ data class Invoice(val items: List<Item>,
                    val subtotal: BigDecimal,
                    val other: Map<String, BigDecimal>,
                    val total: BigDecimal,
-                   val billingAddress: Address, val shippingAddress: Address?) {
+                   val billingAddress: Address,
+                   val shipments: List<Package>?) {
 
     constructor(items: List<Item>,
                 subtotal: BigDecimal, other: Map<String, BigDecimal>, total: BigDecimal,

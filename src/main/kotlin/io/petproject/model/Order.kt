@@ -84,7 +84,7 @@ class PhysicalOrder(override val items: List<Item>,
     fun pay() {
         super.pay()
         // TODO: Process Payment
-        this.invoice = Invoice(items, subtotal(), additional, total(), paymentMethod!!.billingAddress, shippingAddress)
+        this.invoice = Invoice(items, subtotal(), additional, total(), paymentMethod!!.billingAddress, shipments)
         this.status = OrderStatus.UNSHIPPED
     }
 
