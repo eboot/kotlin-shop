@@ -23,6 +23,8 @@ interface Order {
         require(status.id > OrderStatus.PENDING.id) { "Order must be placed before it can be fulfilled" }
     }
 
+    fun complete()
+
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
         this.paymentMethod = paymentMethod
         return this
@@ -61,6 +63,18 @@ class PhysicalOrder(override val items: List<Item>,
         this.status = OrderStatus.PENDING
     }
 
+    override
+    fun fulfill() {
+        super.fulfill()
+        // TODO: Notify Buyer via email
+        // TODO: Notify Seller about the Order to initiate the Processing & Shipping
+    }
+
+    override
+    fun complete() {
+        this.status = OrderStatus.DELIVERED
+    }
+
     fun shippingAddress(address: Address): PhysicalOrder {
         this.shippingAddress = address
         return this
@@ -93,6 +107,20 @@ class DigitalOrder(override val items: List<Item>,
         this.additional["Voucher"] = BigDecimal(-10)
         this.status = OrderStatus.PENDING
     }
+
+    override
+    fun fulfill() {
+        super.fulfill()
+        // TODO: Notify Buyer via email
+        // TODO: Prepare Download Link and send it to the buyer
+        this.status = OrderStatus.SENT
+    }
+
+    override
+    fun complete() {
+        this.status = OrderStatus.REEDEEMED
+    }
+
 }
 
 class MembershipOrder(override val items: List<Item>,
@@ -109,6 +137,20 @@ class MembershipOrder(override val items: List<Item>,
         super.place()
         this.status = OrderStatus.PENDING
     }
+
+    override
+    fun fulfill() {
+        super.fulfill()
+        // TODO: Notify Buyer via email
+        // TODO: Activate the Subscription
+        this.status = OrderStatus.ACTIVATED
+    }
+
+    override
+    fun complete() {
+
+    }
+
 }
 
 enum class OrderStatus(val id: Int = 0) {
