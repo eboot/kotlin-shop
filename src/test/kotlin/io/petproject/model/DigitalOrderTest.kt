@@ -60,14 +60,14 @@ internal class DigitalOrderTest {
     fun `when placing a Digital Order, subtotal should compute overall sum of all Item prices`() {
         val order = buildOrder()
         order.place()
-        assertThat(order.subtotal().toPlainString()).isEqualTo("3256.14")
+        assertThat(order.subtotal().toPlainString()).isEqualTo("524.60")
     }
 
     @Test
     fun `when placing a Digital Order, total should compute subtotal plus discounts for Digital Items`() {
         val order = buildOrder()
         order.place()
-        assertThat(order.total().toPlainString()).isEqualTo("3276.14")
+        assertThat(order.total().toPlainString()).isEqualTo("514.60")
     }
 
     @Test
@@ -76,11 +76,11 @@ internal class DigitalOrderTest {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.pay()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must be placed before it can be payed")
     }
 
     @Test
-    fun `when paying for Digital Order, Status should be updated to UNSHIPPED once pay is successful`() {
+    fun `when paying for Digital Order, Status should be updated to UNSENT once pay is successful`() {
         val order = buildOrder()
         order.place()
         order.pay()
@@ -94,7 +94,7 @@ internal class DigitalOrderTest {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.fulfill()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must be placed and payed before it can be fulfilled")
     }
 
     @Test
@@ -106,7 +106,7 @@ internal class DigitalOrderTest {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.pay()
         }
-        assertThat(ex.message).isEqualTo("Order has been payed already")
+        assertThat(ex.message).isEqualTo("Order Payment has been processed already")
     }
 
     @Test
@@ -119,14 +119,14 @@ internal class DigitalOrderTest {
     }
 
     @Test
-    fun `when completing a Digital Order, throw IllegalStateEx if Status is not SHIPPED`() {
+    fun `when completing a Digital Order, throw IllegalStateEx if Status is not UNSENT`() {
         val order = buildOrder()
         order.place()
         order.pay()
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.complete()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must have been shipped/sent and confirmed, before it can be completed")
     }
 
     @Test
@@ -136,7 +136,7 @@ internal class DigitalOrderTest {
         order.pay()
         order.fulfill()
         order.complete()
-        assertThat(order.status).isEqualTo(OrderStatus.DELIVERED)
+        assertThat(order.status).isEqualTo(OrderStatus.REEDEEMED)
     }
 
 

@@ -40,37 +40,36 @@ internal class MembershipOrderTest {
         )
     }
 
-
     @Test
-    fun `when placing a MembershipOrder, there must be at least one item in the list`() {
-        val ex = Assertions.assertThrows(IllegalArgumentException::class.java) {
-            val order = MembershipOrder(ArrayList(), account, paymentMethod)
+    fun `when placing a MembershipOrder, there must be exactly one item in the list`() {
+        val ex = Assertions.assertThrows(IllegalStateException::class.java) {
+            val order = MembershipOrder(subscriptions, account, paymentMethod)
             order.place()
         }
-        assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
+        assertThat(ex.message).isEqualTo("There must be only 1 subscription per Membership Order")
     }
 
     @Test
     fun `when placing a MembershipOrder, a paymentMethod must be informed`() {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
-            val order = MembershipOrder(subscriptions, account, null)
+            val order = MembershipOrder(subscriptions[0], account, null)
             order.place()
         }
         assertThat(ex.message).isEqualTo("A Payment method must be informed to place the Order")
     }
 
     @Test
-    fun `when placing a Membership Order, subtotal should be the Item price`() {
+    fun `when placing a Membership Order, subtotal should be equalTo the Item price`() {
         val order = buildOrder()
         order.place()
-        assertThat(order.subtotal().toPlainString()).isEqualTo("3256.14")
+        assertThat(order.subtotal().toPlainString()).isEqualTo("29.90")
     }
 
     @Test
-    fun `when placing a Membership Order, total should be the Item price`() {
+    fun `when placing a Membership Order, total should be equalTo the Subtotal`() {
         val order = buildOrder()
         order.place()
-        assertThat(order.total().toPlainString()).isEqualTo("3276.14")
+        assertThat(order.total().toPlainString()).isEqualTo("29.90")
     }
 
     @Test
@@ -79,7 +78,7 @@ internal class MembershipOrderTest {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.pay()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must be placed before it can be payed")
     }
 
     @Test
@@ -99,7 +98,7 @@ internal class MembershipOrderTest {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.pay()
         }
-        assertThat(ex.message).isEqualTo("Order has been payed already")
+        assertThat(ex.message).isEqualTo("Order Payment has been processed already")
     }
 
     @Test
@@ -109,7 +108,7 @@ internal class MembershipOrderTest {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.fulfill()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must be placed and payed before it can be fulfilled")
     }
 
     @Test
@@ -122,7 +121,7 @@ internal class MembershipOrderTest {
     }
 
     private fun buildOrder(): Order {
-        return MembershipOrder(subscriptions, account, null)
+        return MembershipOrder(subscriptions[0], account, null)
                 .paymentMethod(paymentMethod)
     }
 

@@ -112,7 +112,7 @@ internal class PhysicalOrderTest {
         val ex = assertThrows(IllegalStateException::class.java) {
             order.pay()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must be placed before it can be payed")
     }
 
     @Test
@@ -132,7 +132,7 @@ internal class PhysicalOrderTest {
         val ex = assertThrows(IllegalStateException::class.java) {
             order.pay()
         }
-        assertThat(ex.message).isEqualTo("Order has been payed already")
+        assertThat(ex.message).isEqualTo("Order Payment has been processed already")
     }
 
     @Test
@@ -142,7 +142,7 @@ internal class PhysicalOrderTest {
         val ex = assertThrows(IllegalStateException::class.java) {
             order.fulfill()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must be placed and payed before it can be fulfilled")
     }
 
     @Test
@@ -162,7 +162,7 @@ internal class PhysicalOrderTest {
         val ex = assertThrows(IllegalStateException::class.java) {
             order.complete()
         }
-        assertThat(ex.message).isEqualTo("")
+        assertThat(ex.message).isEqualTo("Order must have been shipped/sent and confirmed, before it can be completed")
     }
 
     @Test
