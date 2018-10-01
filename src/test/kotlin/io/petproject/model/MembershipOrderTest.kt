@@ -91,6 +91,18 @@ internal class MembershipOrderTest {
     }
 
     @Test
+    fun `when paying for Membership Order that was already payed, throw IllegalArgEx`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        order.fulfill()
+        val ex = Assertions.assertThrows(IllegalStateException::class.java) {
+            order.pay()
+        }
+        assertThat(ex.message).isEqualTo("Order has been payed already")
+    }
+
+    @Test
     fun `when fulfilling a Membership Order, throw IllegalStateEx if Status is not PAYMENT_COMPLETE`() {
         val order = buildOrder()
         order.place()

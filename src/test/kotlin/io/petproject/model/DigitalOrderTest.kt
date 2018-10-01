@@ -98,6 +98,18 @@ internal class DigitalOrderTest {
     }
 
     @Test
+    fun `when paying for Digital Order that was already payed, throw IllegalArgEx`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        order.fulfill()
+        val ex = Assertions.assertThrows(IllegalStateException::class.java) {
+            order.pay()
+        }
+        assertThat(ex.message).isEqualTo("Order has been payed already")
+    }
+
+    @Test
     fun `when fulfilling a Digital Order, Status should be updated to SENT`() {
         val order = buildOrder()
         order.place()

@@ -124,6 +124,18 @@ internal class PhysicalOrderTest {
     }
 
     @Test
+    fun `when paying for Physical Order that was already payed, throw IllegalArgEx`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        order.fulfill()
+        val ex = assertThrows(IllegalStateException::class.java) {
+            order.pay()
+        }
+        assertThat(ex.message).isEqualTo("Order has been payed already")
+    }
+
+    @Test
     fun `when fulfilling a Physical Order, throw IllegalStateEx if Status is not PAYMENT_COMPLETE`() {
         val order = buildOrder()
         order.place()
