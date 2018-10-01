@@ -2,7 +2,7 @@ package io.petproject.model
 
 import java.math.BigDecimal
 
-data class Item(val product: Product, val quantity: Int) {
+data class Item(val product: Product, var quantity: Int) {
 
     val subtotal: BigDecimal = product.price
             .multiply(quantity.toBigDecimal())
@@ -20,6 +20,11 @@ data class Item(val product: Product, val quantity: Int) {
 
     init {
         require(quantity > 0) { "Quantity must be > 0" }
+    }
+
+    override fun equals(other: Any?): Boolean {
+        val that = other as Item
+        return (this.product == that.product)
     }
 }
 

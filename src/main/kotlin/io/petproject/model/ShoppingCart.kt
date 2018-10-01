@@ -5,20 +5,26 @@ import java.math.RoundingMode
 
 class ShoppingCart {
 
-    var items = HashSet<Item>()
+    val items = HashMap<Product, Item>()
 
-    fun addItem(item: Item): ShoppingCart {
-        items.add(item)
+    fun addProduct(product: Product, quantity: Int): ShoppingCart {
+        require(quantity > 0) { "Quantity must be > 0" }
+        if (items.containsKey(product)) {
+            val item = items[product]
+            item!!.quantity += quantity
+        } else {
+            items[product] = Item(product, quantity)
+        }
         return this
     }
 
-    fun removeItem(item: Item): ShoppingCart {
-        items.remove(item)
+    fun removeProduct(product: Product): ShoppingCart {
+        items.remove(product)
         return this
     }
 
     fun computeSubtotal(): BigDecimal {
-        return items.stream()
+        return items.values.stream()
                 .map(Item::subtotal)
                 .reduce(BigDecimal::add)
                 .orElse(BigDecimal.ZERO)
@@ -26,7 +32,8 @@ class ShoppingCart {
     }
 
     fun checkout(acct: Account): List<Order> {
-        return items.asSequence()
+        return items.values
+                .asSequence()
                 .groupBy { item -> item.group }
                 .map { (group, items) ->
                     when (group) {
