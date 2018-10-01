@@ -74,6 +74,16 @@ internal class OrderTest {
         assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
     }
 
+
+    @Test
+    fun `when placing a PhysicalOrder, a paymentMethod must be informed`() {
+        val ex = assertThrows(IllegalStateException::class.java) {
+            val order = PhysicalOrder(physicalItems, account, null)
+            order.place()
+        }
+        assertThat(ex.message).isEqualTo("A Payment method must be informed to place the Order")
+    }
+
     @Test
     fun `when placing a Physical Order, a shippingAddress must be informed`() {
         val ex = assertThrows(IllegalStateException::class.java) {
@@ -117,6 +127,15 @@ internal class OrderTest {
     }
 
     @Test
+    fun `when placing a DigitalOrder, a paymentMethod must be informed`() {
+        val ex = assertThrows(IllegalStateException::class.java) {
+            val order = DigitalOrder(digitalItems, account, null)
+            order.place()
+        }
+        assertThat(ex.message).isEqualTo("A Payment method must be informed to place the Order")
+    }
+
+    @Test
     fun `when placing a MembershipOrder, there must be at least one item in the list`() {
         val ex = assertThrows(IllegalArgumentException::class.java) {
             val order = MembershipOrder(ArrayList(), account, paymentMethod)
@@ -125,4 +144,12 @@ internal class OrderTest {
         assertThat(ex.message).isEqualTo("There must be at least one item to place the Order")
     }
 
+    @Test
+    fun `when placing a MembershipOrder, a paymentMethod must be informed`() {
+        val ex = assertThrows(IllegalStateException::class.java) {
+            val order = MembershipOrder(subscriptions, account, null)
+            order.place()
+        }
+        assertThat(ex.message).isEqualTo("A Payment method must be informed to place the Order")
+    }
 }
