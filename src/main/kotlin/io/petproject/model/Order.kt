@@ -45,8 +45,8 @@ class PhysicalOrder(override val items: List<Item>,
     fun place() {
         super.place()
         checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
+        shipments = setupPackages()
 
-        this.shipments = setupPackages()
         additional["Shipping & Handling"] = shipments?.asSequence()
                 ?.map(Package::getShippingCosts)
                 ?.reduce(BigDecimal::add)
@@ -79,11 +79,10 @@ class DigitalOrder(override val items: List<Item>,
     override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.PENDING
 
-    override fun total(): BigDecimal {
-        val total = super.total()
-        val subtotal = super.total()
-        val discounts = BigDecimal.ZERO // TODO("Compute Digital Media discounts")
-        return subtotal.subtract(discounts)
+    override
+    fun place() {
+        super.place()
+        additional["Voucher"] = BigDecimal(-10)
     }
 }
 
