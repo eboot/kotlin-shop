@@ -61,6 +61,12 @@ class PhysicalOrder(override val items: List<Item>,
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
 
+    init {
+        require(items.find { i -> i.group != ItemType.PHYSICAL } == null) {
+            "A Physical Order may only contain Physical items"
+        }
+    }
+
     override
     fun place() {
         super.place()
@@ -123,6 +129,12 @@ class DigitalOrder(override val items: List<Item>,
     override var status: OrderStatus = OrderStatus.UNKNOWN
     override var invoice: Invoice? = null
 
+    init {
+        require(items.find { i -> i.group != ItemType.DIGITAL } == null) {
+            "A Digital Order may only contain Digital items"
+        }
+    }
+
     override
     fun place() {
         super.place()
@@ -160,6 +172,12 @@ class MembershipOrder(override val items: List<Item>,
     override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.UNKNOWN
     override var invoice: Invoice? = null
+
+    init {
+        require(items.find { i -> i.group != ItemType.MEMBERSHIP } == null) {
+            "A Subscription Order may only contain a Subscription Item"
+        }
+    }
 
     constructor(item: Item, account: Account, paymentMethod: PaymentMethod?) : this(listOf(item), account, paymentMethod)
 
