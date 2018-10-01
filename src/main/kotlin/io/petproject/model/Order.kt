@@ -8,6 +8,7 @@ interface Order {
     val account: Account
     var paymentMethod: PaymentMethod?
     val additional: Map<String, BigDecimal>
+    var invoice: Invoice?
     var status: OrderStatus
 
     fun place() {
@@ -17,13 +18,12 @@ interface Order {
 
     fun pay() {
         check((status.id < OrderStatus.PENDING.id).not()) { "Order must be placed before it can be payed" }
-        check((status.id >= OrderStatus.PAYMENT_COMPLETE.id).not()) { "Order Payment has been processed already" }
-        this.status = OrderStatus.PAYMENT_COMPLETE
+        check((status.id >= OrderStatus.UNSHIPPED.id).not()) { "Order Payment has been processed already" }
     }
 
     fun fulfill() {
-        check((status.id < OrderStatus.PAYMENT_COMPLETE.id).not()) { "Order must be placed and payed before it can be fulfilled" }
-        check((status.id >= OrderStatus.SENT.id).not()) { "Order Fulfillment has been processed already"}
+        check((status.id < OrderStatus.UNSHIPPED.id).not()) { "Order must be placed and payed before it can be fulfilled" }
+        check((status.id >= OrderStatus.SHIPPED.id).not()) { "Order Fulfillment has been processed already"}
     }
 
     fun complete() {
@@ -54,6 +54,8 @@ class PhysicalOrder(override val items: List<Item>,
 
     override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.UNKNOWN
+    override var invoice: Invoice? = null
+
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
 
@@ -72,6 +74,8 @@ class PhysicalOrder(override val items: List<Item>,
     override
     fun pay() {
         super.pay()
+        // TODO: Process Payment
+        this.invoice = Invoice(items, paymentMethod!!.billingAddress, shippingAddress)
         this.status = OrderStatus.UNSHIPPED
     }
 
@@ -114,6 +118,7 @@ class DigitalOrder(override val items: List<Item>,
 
     override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.UNKNOWN
+    override var invoice: Invoice? = null
 
     override
     fun place() {
@@ -125,6 +130,8 @@ class DigitalOrder(override val items: List<Item>,
     override
     fun pay() {
         super.pay()
+        // TODO: Process Payment
+        this.invoice = Invoice(items, paymentMethod!!.billingAddress)
         this.status = OrderStatus.UNSENT
     }
 
@@ -150,6 +157,7 @@ class MembershipOrder(override val items: List<Item>,
 
     override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.UNKNOWN
+    override var invoice: Invoice? = null
 
     constructor(item: Item, account: Account, paymentMethod: PaymentMethod?) : this(listOf(item), account, paymentMethod)
 
@@ -160,8 +168,11 @@ class MembershipOrder(override val items: List<Item>,
         this.status = OrderStatus.PENDING
     }
 
-    override fun pay() {
+    override
+    fun pay() {
         super.pay()
+        // TODO: Process Payment
+        this.invoice = Invoice(items, paymentMethod!!.billingAddress)
         this.status = OrderStatus.PENDING_ACTIVATION
     }
 
@@ -183,7 +194,6 @@ class MembershipOrder(override val items: List<Item>,
 enum class OrderStatus(val id: Int = 0) {
     UNKNOWN,
     PENDING(100),
-    PAYMENT_COMPLETE(150),
     UNSHIPPED(200),
     UNSENT(200),
     PENDING_ACTIVATION(200),
