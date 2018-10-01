@@ -15,6 +15,10 @@ interface Order {
         checkNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
     }
 
+    fun fulfill() {
+        require(status != OrderStatus.UNKNOWN) { "Order must be placed before it can be fulfilled" }
+    }
+
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
         this.paymentMethod = paymentMethod
         return this
