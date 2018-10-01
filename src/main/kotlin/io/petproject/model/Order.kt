@@ -15,8 +15,12 @@ interface Order {
         checkNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
     }
 
+    fun pay() {
+        require(status == OrderStatus.UNKNOWN) { "Order must be placed before it can be payed" }
+    }
+
     fun fulfill() {
-        require(status != OrderStatus.UNKNOWN) { "Order must be placed before it can be fulfilled" }
+        require(status.id > OrderStatus.PENDING.id) { "Order must be placed before it can be fulfilled" }
     }
 
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
@@ -107,11 +111,15 @@ class MembershipOrder(override val items: List<Item>,
     }
 }
 
-enum class OrderStatus {
+enum class OrderStatus(val id: Int = 0) {
     UNKNOWN,
-    PENDING,
-    UNSHIPPED,
-    PARTIALLY_SHIPPED,
-    SHIPPED,
-    DELIVERED
+    PENDING(100),
+    UNSHIPPED(200),
+    UNSENT(200),
+    PENDING_ACTIVATION(200),
+    SHIPPED(300),
+    SENT(300),
+    DELIVERED(400),
+    REEDEEMED(400),
+    ACTIVATED(400)
 }
