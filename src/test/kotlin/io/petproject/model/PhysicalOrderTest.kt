@@ -46,6 +46,17 @@ internal class PhysicalOrderTest {
     }
 
     @Test
+    fun `when creating a Physical Order, there must be only Physical items in the list`() {
+        val ex = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            PhysicalOrder(
+                    listOf(Item(Product("digital product", Category.DIGITAL_VIDEO_GAMES, 1.99), 1)),
+                    account, paymentMethod
+            )
+        }
+        assertThat(ex.message).isEqualTo("A Physical Order may only contain Physical items")
+    }
+
+    @Test
     fun `when placing a PhysicalOrder, there must be at least one item in the list`() {
         val ex = Assertions.assertThrows(IllegalArgumentException::class.java) {
             val order = PhysicalOrder(ArrayList(), account, paymentMethod)

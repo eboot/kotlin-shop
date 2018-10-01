@@ -39,6 +39,17 @@ internal class DigitalOrderTest {
     }
 
     @Test
+    fun `when creating a Digital Order, there must be only Digital items in the list`() {
+        val ex = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            DigitalOrder(
+                    listOf(Item(Product("physical product", Category.PHYSICAL, 1.99), 1)),
+                    account, paymentMethod
+            )
+        }
+        assertThat(ex.message).isEqualTo("A Digital Order may only contain Digital items")
+    }
+
+    @Test
     fun `when placing a DigitalOrder, there must be at least one item in the list`() {
         val ex = Assertions.assertThrows(IllegalArgumentException::class.java) {
             val order = DigitalOrder(ArrayList(), account, paymentMethod)

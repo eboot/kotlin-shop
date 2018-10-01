@@ -41,6 +41,17 @@ internal class MembershipOrderTest {
     }
 
     @Test
+    fun `when creating a Membership Order, there must be only a Membership item the list`() {
+        val ex = Assertions.assertThrows(IllegalArgumentException::class.java) {
+            MembershipOrder(
+                    listOf(Item(Product("physical product", Category.PHYSICAL, 1.99), 1)),
+                    account, paymentMethod
+            )
+        }
+        assertThat(ex.message).isEqualTo("A Subscription Order may only contain a Subscription Item")
+    }
+
+    @Test
     fun `when placing a MembershipOrder, there must be exactly one item in the list`() {
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             val order = MembershipOrder(subscriptions, account, paymentMethod)
