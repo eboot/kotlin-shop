@@ -27,8 +27,8 @@ interface Order {
     }
 
     fun complete() {
-        check((status.id < OrderStatus.SHIPPED.id).not()) { "Order must have confirmed shipping/sent before it can be complete" }
-        check((status.id > OrderStatus.DELIVERED.id).not()) { "Order has been delivered already" }
+        check((status.id < OrderStatus.SHIPPED.id).not()) { "Order must have been shipped/sent and confirmed, before it can be completed" }
+        check((status.id >= OrderStatus.DELIVERED.id).not()) { "Order has been delivered already" }
     }
 
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
@@ -70,6 +70,12 @@ class PhysicalOrder(override val items: List<Item>,
     }
 
     override
+    fun pay() {
+        super.pay()
+        this.status = OrderStatus.UNSHIPPED
+    }
+
+    override
     fun fulfill() {
         super.fulfill()
         // TODO: Notify Buyer via email
@@ -79,6 +85,7 @@ class PhysicalOrder(override val items: List<Item>,
 
     override
     fun complete() {
+        super.complete()
         this.status = OrderStatus.DELIVERED
     }
 
@@ -116,6 +123,12 @@ class DigitalOrder(override val items: List<Item>,
     }
 
     override
+    fun pay() {
+        super.pay()
+        this.status = OrderStatus.UNSENT
+    }
+
+    override
     fun fulfill() {
         super.fulfill()
         // TODO: Notify Buyer via email
@@ -125,6 +138,7 @@ class DigitalOrder(override val items: List<Item>,
 
     override
     fun complete() {
+        super.complete()
         this.status = OrderStatus.REEDEEMED
     }
 
@@ -141,8 +155,14 @@ class MembershipOrder(override val items: List<Item>,
 
     override
     fun place() {
-        super.place()
+        checkNotNull(paymentMethod) { "A Payment method must be informed to place the Order" }
+        check((items.size == 1)) { "There must be only 1 subscription per Membership Order"}
         this.status = OrderStatus.PENDING
+    }
+
+    override fun pay() {
+        super.pay()
+        this.status = OrderStatus.PENDING_ACTIVATION
     }
 
     override
@@ -154,8 +174,8 @@ class MembershipOrder(override val items: List<Item>,
     }
 
     override
-    fun complete() {
-
+    fun total(): BigDecimal {
+        return super.subtotal()
     }
 
 }
@@ -172,8 +192,4 @@ enum class OrderStatus(val id: Int = 0) {
     DELIVERED(400),
     REEDEEMED(400),
     ACTIVATED(400)
-}
-
-fun main(args: Array<String>) {
-    check(!(0 < 1)) { "prints if it is true " }
 }
