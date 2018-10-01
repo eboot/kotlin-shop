@@ -7,6 +7,7 @@ interface Order {
     val items: List<Item>
     val account: Account
     var paymentMethod: PaymentMethod?
+    val additional: Map<String, BigDecimal>
     var status: OrderStatus
 
     fun place() {
@@ -19,10 +20,14 @@ interface Order {
         return this
     }
 
-    fun total(): BigDecimal {
+    fun subtotal(): BigDecimal {
         return items.asSequence()
                 .map(Item::subtotal)
                 .reduce(BigDecimal::add)
+    }
+
+    fun total(): BigDecimal {
+        return subtotal().add(additional.values.reduce(BigDecimal::add))
     }
 
 }
@@ -31,23 +36,21 @@ class PhysicalOrder(override val items: List<Item>,
                     override val account: Account,
                     override var paymentMethod: PaymentMethod?) : Order {
 
+    override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.PENDING
     var shippingAddress: Address? = null
     var shipments: List<Package>? = null
-
 
     override
     fun place() {
         super.place()
         checkNotNull(shippingAddress) { "Shipping Address must be informed for Orders with physical delivery" }
-        this.shipments = setupPackages()
-    }
 
-    override
-    fun total(): BigDecimal {
-        val subtotal = super.total()
-        val shippingCosts = BigDecimal.ZERO //TODO("Compute Shipping Costs")
-        return subtotal.add(shippingCosts)
+        this.shipments = setupPackages()
+        additional["Shipping & Handling"] = shipments?.asSequence()
+                ?.map(Package::getShippingCosts)
+                ?.reduce(BigDecimal::add)
+                ?: BigDecimal.ZERO
     }
 
     fun shippingAddress(address: Address): PhysicalOrder {
@@ -73,9 +76,11 @@ class DigitalOrder(override val items: List<Item>,
                    override val account: Account,
                    override var paymentMethod: PaymentMethod?) : Order {
 
+    override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.PENDING
 
     override fun total(): BigDecimal {
+        val total = super.total()
         val subtotal = super.total()
         val discounts = BigDecimal.ZERO // TODO("Compute Digital Media discounts")
         return subtotal.subtract(discounts)
@@ -86,9 +91,10 @@ class MembershipOrder(override val items: List<Item>,
                       override val account: Account,
                       override var paymentMethod: PaymentMethod?) : Order {
 
-    constructor(item: Item, account: Account, paymentMethod: PaymentMethod?): this(listOf(item), account, paymentMethod)
-
+    override val additional: HashMap<String, BigDecimal> = HashMap()
     override var status: OrderStatus = OrderStatus.PENDING
+
+    constructor(item: Item, account: Account, paymentMethod: PaymentMethod?) : this(listOf(item), account, paymentMethod)
 }
 
 enum class OrderStatus {
