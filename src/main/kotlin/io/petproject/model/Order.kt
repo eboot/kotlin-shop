@@ -99,6 +99,7 @@ class PhysicalOrder(override val items: List<Item>,
     override
     fun complete() {
         super.complete()
+        // TODO: Track the Packages until all packages are delivered
         this.status = OrderStatus.DELIVERED
     }
 
@@ -160,6 +161,7 @@ class DigitalOrder(override val items: List<Item>,
 
     override
     fun complete() {
+        // TODO:: Track when the the Buyer clicks on the emailed link to redeem the item
         super.complete()
         this.status = OrderStatus.REEDEEMED
     }
@@ -200,8 +202,7 @@ class MembershipOrder(override val items: List<Item>,
     override
     fun fulfill() {
         super.fulfill()
-        // TODO: Notify Buyer via email
-        // TODO: Activate the Subscription
+        // TODO: Activate the Subscription Service
         this.status = OrderStatus.ACTIVATED
     }
 

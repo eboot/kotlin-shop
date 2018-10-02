@@ -42,12 +42,12 @@ internal class ShoppingCartTest {
 
     @Test
     fun `when computing Subtotal, sum the price of all items in the cart`() {
-        assertThat(shoppingCart.computeSubtotal().toPlainString()).isEqualTo("3838.44")
+        assertThat(shoppingCart.subtotal().toPlainString()).isEqualTo("3838.44")
     }
 
     @Test
     fun `when computing Subtotal, return Zero if there's nothing in the cart`() {
-        assertThat(ShoppingCart().computeSubtotal().toPlainString()).isEqualTo("0.00")
+        assertThat(ShoppingCart().subtotal().toPlainString()).isEqualTo("0.00")
     }
 
     @Test

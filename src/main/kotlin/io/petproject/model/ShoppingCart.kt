@@ -18,12 +18,12 @@ class ShoppingCart {
         return this
     }
 
-    fun removeProduct(product: Product): ShoppingCart {
+    fun delete(product: Product): ShoppingCart {
         items.remove(product)
         return this
     }
 
-    fun computeSubtotal(): BigDecimal {
+    fun subtotal(): BigDecimal {
         return items.values.stream()
                 .map(Item::subtotal)
                 .reduce(BigDecimal::add)
