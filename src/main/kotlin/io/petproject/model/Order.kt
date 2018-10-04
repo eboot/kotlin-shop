@@ -48,6 +48,9 @@ interface Order {
         return subtotal().add(additional.values.reduce(BigDecimal::add))
     }
 
+    fun validate(type: ItemType, message: String) {
+        require(items.find { i -> i.group != type } == null) { message }
+    }
 }
 
 class PhysicalOrder(override val items: List<Item>,
@@ -62,9 +65,7 @@ class PhysicalOrder(override val items: List<Item>,
     var shipments: List<Package>? = null
 
     init {
-        require(items.find { i -> i.group != ItemType.PHYSICAL } == null) {
-            "A Physical Order may only contain Physical items"
-        }
+        super.validate(ItemType.PHYSICAL, "A Physical Order may only contain Physical items")
     }
 
     override
@@ -131,9 +132,7 @@ class DigitalOrder(override val items: List<Item>,
     override var invoice: Invoice? = null
 
     init {
-        require(items.find { i -> i.group != ItemType.DIGITAL } == null) {
-            "A Digital Order may only contain Digital items"
-        }
+        super.validate(ItemType.DIGITAL, "A Digital Order may only contain Digital items")
     }
 
     override
@@ -177,9 +176,7 @@ class MembershipOrder(override val items: List<Item>,
     override var invoice: Invoice? = null
 
     init {
-        require(items.find { i -> i.group != ItemType.MEMBERSHIP } == null) {
-            "A Subscription Order may only contain a Subscription Item"
-        }
+        super.validate(ItemType.MEMBERSHIP, "A Subscription Order may only contain a Subscription Item")
     }
 
     constructor(item: Item, account: Account, paymentMethod: PaymentMethod?) : this(listOf(item), account, paymentMethod)
