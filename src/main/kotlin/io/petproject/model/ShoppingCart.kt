@@ -10,8 +10,8 @@ class ShoppingCart {
     fun addProduct(product: Product, quantity: Int): ShoppingCart {
         require(quantity > 0) { "Quantity must be > 0" }
         if (items.containsKey(product)) {
-            val item = items[product]
-            item!!.quantity += quantity
+            val item = items[product]!!
+            item.quantity += quantity
         } else {
             items[product] = Item(product, quantity)
         }
