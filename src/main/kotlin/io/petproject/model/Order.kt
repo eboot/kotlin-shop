@@ -18,19 +18,19 @@ interface Order {
     }
 
     fun pay(): Invoice {
-        check((status.id < OrderStatus.PENDING.id).not()) { "Order must be placed before it can be payed" }
-        check((status.id >= OrderStatus.UNSHIPPED.id).not()) { "Order Payment has been processed already" }
+        check((status.code < OrderStatus.PENDING.code).not()) { "Order must be placed before it can be payed" }
+        check((status.code >= OrderStatus.UNSHIPPED.code).not()) { "Order Payment has been processed already" }
         return Invoice(this)
     }
 
     fun fulfill() {
-        check((status.id < OrderStatus.UNSHIPPED.id).not()) { "Order must be placed and payed before it can be fulfilled" }
-        check((status.id >= OrderStatus.SHIPPED.id).not()) { "Order Fulfillment has been processed already" }
+        check((status.code < OrderStatus.UNSHIPPED.code).not()) { "Order must be placed and payed before it can be fulfilled" }
+        check((status.code >= OrderStatus.SHIPPED.code).not()) { "Order Fulfillment has been processed already" }
     }
 
     fun complete() {
-        check((status.id < OrderStatus.SHIPPED.id).not()) { "Order must have been shipped/sent and confirmed, before it can be completed" }
-        check((status.id >= OrderStatus.DELIVERED.id).not()) { "Order has been delivered already" }
+        check((status.code < OrderStatus.SHIPPED.code).not()) { "Order must have been shipped/sent and confirmed, before it can be completed" }
+        check((status.code >= OrderStatus.DELIVERED.code).not()) { "Order has been delivered already" }
     }
 
     fun paymentMethod(paymentMethod: PaymentMethod): Order {
@@ -213,7 +213,7 @@ class MembershipOrder(override val items: List<Item>,
 
 }
 
-enum class OrderStatus(val id: Int = 0) {
+enum class OrderStatus(val code: Int = 0) {
     UNKNOWN,
     PENDING(100),
     UNSHIPPED(200),
