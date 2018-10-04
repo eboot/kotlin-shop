@@ -1,5 +1,6 @@
 package io.petproject.model
 
+import java.lang.ClassCastException
 import java.math.BigDecimal
 
 data class Item(val product: Product, var quantity: Int) {
@@ -23,8 +24,12 @@ data class Item(val product: Product, var quantity: Int) {
     }
 
     override fun equals(other: Any?): Boolean {
-        val that = other as Item
-        return (this.product == that.product)
+        return try {
+            val that = other as Item
+            (this.product == that.product)
+        } catch (ex: ClassCastException) {
+            false
+        }
     }
 }
 
