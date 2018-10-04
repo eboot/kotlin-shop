@@ -1,4 +1,9 @@
 # Kotlin Shop
+[![Travis CI](https://travis-ci.org/iobruno/kotlin-shop.svg?branch=master)](https://travis-ci.org/iobruno/kotlin-shop)
+[![Maintainability](https://api.codeclimate.com/v1/badges/3203ff55a8ce4d832e8d/maintainability)](https://codeclimate.com/github/iobruno/kotlin-shop/maintainability)
+[![Known Vulnerabilities](https://snyk.io/test/github/iobruno/kotlin-shop/badge.svg?targetFile=build.gradle)](https://snyk.io/test/github/iobruno/kotlin-shop?targetFile=build.gradle)
+
+
 
 This is just a pet project of mine to play with Kotlin stdlib
 
