@@ -82,7 +82,7 @@ internal class DigitalOrderTest {
     }
 
     @Test
-    fun `when paying for Digital Order, throw IllegalStateEx if Status is not PENDING`() {
+    fun `when paying for a Digital Order, throw IllegalStateEx if Status is not PENDING`() {
         val order = buildOrder()
         val ex = Assertions.assertThrows(IllegalStateException::class.java) {
             order.pay()
@@ -91,11 +91,33 @@ internal class DigitalOrderTest {
     }
 
     @Test
-    fun `when paying for Digital Order, Status should be updated to UNSENT once pay is successful`() {
+    fun `when paying for a Digital Order, Status should be updated to UNSENT once pay is successful`() {
         val order = buildOrder()
         order.place()
         order.pay()
         assertThat(order.status).isEqualTo(OrderStatus.UNSENT)
+    }
+
+    @Test
+    fun `when paying for a Digital Order that was already payed, throw IllegalArgEx`() {
+        val order = buildOrder()
+        order.place()
+        order.pay()
+        order.fulfill()
+        val ex = Assertions.assertThrows(IllegalStateException::class.java) {
+            order.pay()
+        }
+        assertThat(ex.message).isEqualTo("Order Payment has been processed already")
+    }
+
+    @Test
+    fun `when generating an Invoice for a Digital Order, throw IllegalStateEx if Status is not UNSENT`() {
+        val order = buildOrder()
+        order.place()
+        val ex = Assertions.assertThrows(IllegalStateException::class.java) {
+            order.invoice()
+        }
+        assertThat(ex.message).isEqualTo("Invoice can only be generated after payment is complete")
     }
 
     @Test
