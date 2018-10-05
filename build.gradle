@@ -29,15 +29,6 @@ dependencies {
     runtime("org.junit.jupiter:junit-jupiter-engine:$junit_version")
 }
 
-jar {
-    manifest {
-        attributes 'Main-Class': 'io.petproject.ApplicationKt'
-    }
-    from {
-        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
-    }
-}
-
 test {
     useJUnitPlatform()
 }
@@ -48,6 +39,10 @@ compileKotlin {
 
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
+}
+
+jacoco {
+    toolVersion = "0.8.2"
 }
 
 jacocoTestReport {
