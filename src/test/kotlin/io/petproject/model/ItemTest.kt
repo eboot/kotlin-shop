@@ -30,7 +30,7 @@ internal class ItemTest {
         ).map { category ->
             Item(Product("product", category, 10.00), 1)
         }.forEach { item ->
-            run { assertThat(item.group).isEqualTo(ItemType.DIGITAL) }
+            run { assertThat(item.type).isEqualTo(ItemType.DIGITAL) }
         }
     }
 
@@ -41,14 +41,14 @@ internal class ItemTest {
         ).map { category ->
             Item(Product("product", category, 10.00), 1)
         }.forEach { item ->
-            run { assertThat(item.group).isEqualTo(ItemType.PHYSICAL) }
+            run { assertThat(item.type).isEqualTo(ItemType.PHYSICAL) }
         }
     }
 
     @Test
     fun `when product category is a subscription, item_group must be Membership`() {
         val item = Item(Product("product", Category.SUBSCRIPTION, 10.00), 1)
-        assertThat(item.group).isEqualTo(ItemType.MEMBERSHIP)
+        assertThat(item.type).isEqualTo(ItemType.MEMBERSHIP)
     }
 
 }

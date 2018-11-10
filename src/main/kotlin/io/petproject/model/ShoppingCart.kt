@@ -34,7 +34,7 @@ class ShoppingCart {
     fun checkout(acct: Account): List<Order> {
         return items.values
                 .asSequence()
-                .groupBy { item -> item.group }
+                .groupBy { item -> item.type }
                 .map { (group, items) ->
                     when (group) {
                         ItemType.MEMBERSHIP -> items.map { item -> MembershipOrder(item, acct, acct.getDefaultPaymentMethod()) }

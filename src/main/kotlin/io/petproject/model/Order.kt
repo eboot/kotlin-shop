@@ -53,7 +53,7 @@ interface Order {
     }
 
     fun validate(type: ItemType, message: String) {
-        require(items.find { i -> i.group != type } == null) { message }
+        require(items.find { item -> item.type != type } == null) { message }
     }
 }
 

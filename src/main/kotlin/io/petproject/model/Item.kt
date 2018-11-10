@@ -5,10 +5,9 @@ import java.math.BigDecimal
 
 data class Item(val product: Product, var quantity: Int) {
 
-    val subtotal: BigDecimal = product.price
-            .multiply(quantity.toBigDecimal())
+    val subtotal: BigDecimal = product.price.multiply(quantity.toBigDecimal())
 
-    val group: ItemType by lazy {
+    val type: ItemType by lazy {
         when (product.category) {
             Category.DIGITAL_COPY_MOVIES_TV -> ItemType.DIGITAL
             Category.DIGITAL_MUSIC -> ItemType.DIGITAL
