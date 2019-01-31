@@ -24,10 +24,9 @@ class ShoppingCart {
     }
 
     fun subtotal(): BigDecimal {
-        return items.values.stream()
+        return items.values.asSequence()
                 .map(Item::subtotal)
-                .reduce(BigDecimal::add)
-                .orElse(BigDecimal.ZERO)
+                .fold(BigDecimal.ZERO, BigDecimal::add)
                 .setScale(2, RoundingMode.UNNECESSARY)
     }
 
